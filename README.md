@@ -5,8 +5,8 @@ Diario musical para fans de Lali: se pueden recorrer sus álbumes, registrar can
 Trabajo Práctico 2 — Desarrollo Frontend II (UADE, 2026)
 Tiziana Casa
 
-- App publicada: _(pendiente)_
-- Repositorio: _(pendiente)_
+- App publicada: https://lali-las-eras.vercel.app
+- Repositorio: https://github.com/tizicasa18-design/lali-las-eras
 
 ## Tecnologías
 
