@@ -73,17 +73,20 @@ function Home() {
       {/* Línea de tiempo */}
       <section className="page">
         <h2>Línea de tiempo</h2>
-        <ul className="timeline-cards">
+        {/* Lista ordenada (ol) porque las eras van en orden cronológico.
+            Cada era es un punto sobre la línea roja. */}
+        <ol className="timeline">
           {studioAlbums.map((album) => (
             <li key={album.id}>
-              <Link to={`/eras/${album.id}`} className="timeline-card">
+              <Link to={`/eras/${album.id}`} className="timeline-link">
                 <span className="timeline-year">{album.year}</span>
+                <span className="timeline-dot" aria-hidden="true" />
                 <span className="timeline-title">{album.title}</span>
                 <span className="timeline-songs">{album.songs.length} canciones</span>
               </Link>
             </li>
           ))}
-        </ul>
+        </ol>
       </section>
 
       {/* Era especial */}

@@ -356,7 +356,6 @@ h2::after {
 /* ================= 7. Tarjetas (mismo estilo en todo el sitio) ================= */
 
 .step,
-.timeline-card,
 .diary-entry,
 .diary-form,
 .empty-state {
@@ -434,48 +433,79 @@ h2::after {
   margin: 0;
 }
 
-/* Línea de tiempo */
-.timeline-cards {
+/* Línea de tiempo: una línea roja que une un punto por año.
+   En compu es horizontal; en celular pasa a ser vertical (ver sección 14). */
+.timeline {
+  position: relative;
   list-style: none;
   padding: 0;
+  margin: 2rem 0 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(6, 1fr);
 }
 
-.timeline-card {
+/* La línea: pasa justo por el centro de los puntos */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(2.6rem + 0.6rem + 0.6rem - 2px); /* alto del año + margen + mitad del punto */
+  height: 4px;
+  background-color: var(--rojo);
+  border-radius: 999px;
+}
+
+.timeline-link {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: 1.1rem;
+  align-items: center;
+  padding: 0 0.4rem;
+  text-align: center;
   text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.timeline-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 var(--rojo);
 }
 
 .timeline-year {
   color: var(--rojo);
   font-family: var(--font-titulo);
-  font-size: 2.6rem;
-  line-height: 1;
+  font-size: 2.2rem;
+  line-height: 2.6rem;
+}
+
+.timeline-dot {
+  position: relative; /* queda por encima de la línea */
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0.6rem 0;
+  border: 3px solid var(--rojo);
+  border-radius: 50%;
+  background-color: var(--negro);
+  transition: transform 0.2s, background-color 0.2s;
 }
 
 .timeline-title {
-  margin-top: 0.3rem;
-  font-weight: 700;
+  margin-top: 0.4rem;
+  font-family: var(--font-titulo);
+  font-size: 1.05rem;
+  line-height: 1.15;
   text-transform: uppercase;
 }
 
 .timeline-songs {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.timeline-link:hover .timeline-dot,
+.timeline-link:focus-visible .timeline-dot {
+  background-color: var(--rojo);
+  transform: scale(1.4);
+}
+
+.timeline-link:hover .timeline-title {
+  color: var(--rojo);
 }
 
 /* Era especial (Inicio) */
@@ -497,12 +527,13 @@ h2::after {
 
 /* ================= 9. Las eras ================= */
 
+/* 3 columnas fijas: las 6 eras quedan en 3 y 3, sin una sola suelta abajo */
 .album-grid {
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
-  gap: 2rem 1.75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 2rem;
 }
 
 .album-card a {
@@ -1180,6 +1211,63 @@ button.star:hover {
 }
 
 /* ================= 14. Celular ================= */
+
+/* Tablet y celular: las eras en 2 columnas (quedan 2, 2 y 2)
+   y la línea de tiempo pasa a ser vertical, con la línea a la izquierda */
+@media (max-width: 860px) {
+  .album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.25rem;
+  }
+
+  .timeline {
+    grid-template-columns: 1fr;
+    row-gap: 1.25rem;
+  }
+
+  .timeline::before {
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: calc(0.6rem - 2px); /* centro del punto */
+    right: auto;
+    width: 4px;
+    height: auto;
+  }
+
+  /* Punto a la izquierda; año, título y canciones a la derecha */
+  .timeline-link {
+    display: grid;
+    grid-template-columns: 1.2rem 1fr;
+    grid-template-areas:
+      'dot year'
+      '. title'
+      '. songs';
+    column-gap: 1rem;
+    align-items: center;
+    padding: 0;
+    text-align: left;
+  }
+
+  .timeline-dot {
+    grid-area: dot;
+    margin: 0;
+  }
+
+  .timeline-year {
+    grid-area: year;
+    font-size: 1.9rem;
+    line-height: 1;
+  }
+
+  .timeline-title {
+    grid-area: title;
+    margin-top: 0.2rem;
+  }
+
+  .timeline-songs {
+    grid-area: songs;
+  }
+}
 
 @media (max-width: 640px) {
   .navbar-toggle {
