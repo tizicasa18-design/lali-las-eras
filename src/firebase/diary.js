@@ -15,13 +15,20 @@ import {
 import { signInAnonymously } from 'firebase/auth'
 import { db, auth } from './config'
 
+// Guarda el inicio de sesión anónimo mientras está en curso,
+// para que si dos partes de la app lo piden al mismo tiempo se cree UN solo usuario.
+let signInInProgress = null
+
 // Devuelve el id del usuario anónimo.
 // Primero espera a que Firebase "recuerde" si este navegador ya tenía un usuario.
 // Si no lo esperara, cada recarga crearía un usuario nuevo y el diario se perdería.
 async function getUserId() {
   await auth.authStateReady()
   if (!auth.currentUser) {
-    await signInAnonymously(auth)
+    if (!signInInProgress) {
+      signInInProgress = signInAnonymously(auth)
+    }
+    await signInInProgress
   }
   return auth.currentUser.uid
 }

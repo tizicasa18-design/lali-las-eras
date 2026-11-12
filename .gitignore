@@ -21,6 +21,10 @@ dist-ssr
 # Documentos que se entregan por Teams (no van en el repositorio)
 GUIA_DE_ESTUDIO.md
 BITACORA.md
+capturas*/
+
+# Archivo oculto de Windows
+desktop.ini
 
 # Editor directories and files
 .vscode/*

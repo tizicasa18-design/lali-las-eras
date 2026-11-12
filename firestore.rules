@@ -16,10 +16,14 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
-    // Controles básicos de los datos que se guardan
+    // Controles básicos de los datos que se guardan.
+    // Las pendientes (no escuchadas) tienen 0 estrellas y no pueden ser favoritas.
+    // Las escuchadas tienen de 1 a 5 estrellas.
     function isValidEntry(data) {
       return data.rating is int
-        && data.rating >= 1 && data.rating <= 5
+        && data.rating >= 0 && data.rating <= 5
+        && (data.listened == false || data.rating >= 1)
+        && (data.listened == true || data.favorite == false)
         && data.review is string
         && data.review.size() <= 500
         && data.listened is bool

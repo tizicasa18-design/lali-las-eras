@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import StarRating from './StarRating'
 
 const MAX_REVIEW_LENGTH = 500
 
@@ -22,7 +23,8 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
     event.preventDefault() // evita que la página se recargue
 
     // Validaciones básicas
-    if (rating < 1 || rating > 5) {
+    // Solo pido estrellas si ya la escuchó (una pendiente no se puede puntuar)
+    if (listened && (rating < 1 || rating > 5)) {
       setError('Elegí una puntuación de 1 a 5 estrellas.')
       return
     }
@@ -34,7 +36,10 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
     setError('')
     setSaving(true)
     try {
-      await onSubmit({ rating, review: review.trim(), listened, favorite })
+      // Si es pendiente, se guarda con 0 estrellas y sin favorita
+      const finalRating = listened ? rating : 0
+      const finalFavorite = listened ? favorite : false
+      await onSubmit({ rating: finalRating, review: review.trim(), listened, favorite: finalFavorite })
     } catch (err) {
       setError(err.message || 'No se pudo guardar. Probá de nuevo.')
     }
@@ -45,32 +50,6 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
     <form className="diary-form" onSubmit={handleSubmit}>
       <p className="diary-form-title">{songTitle}</p>
 
-      <label>
-        Puntuación
-        <select value={rating} onChange={(event) => setRating(Number(event.target.value))}>
-          <option value={0}>Elegir…</option>
-          <option value={1}>★ (1)</option>
-          <option value={2}>★★ (2)</option>
-          <option value={3}>★★★ (3)</option>
-          <option value={4}>★★★★ (4)</option>
-          <option value={5}>★★★★★ (5)</option>
-        </select>
-      </label>
-
-      <label>
-        Reseña (opcional)
-        <textarea
-          value={review}
-          onChange={(event) => setReview(event.target.value)}
-          rows={3}
-          maxLength={MAX_REVIEW_LENGTH}
-          placeholder="¿Qué te provoca esta canción?"
-        />
-        <span className="char-count">
-          {review.length}/{MAX_REVIEW_LENGTH}
-        </span>
-      </label>
-
       <label className="checkbox">
         <input
           type="checkbox"
@@ -80,14 +59,44 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
         La escuché
       </label>
 
-      <label className="checkbox">
-        <input
-          type="checkbox"
-          checked={favorite}
-          onChange={(event) => setFavorite(event.target.checked)}
+      {/* Las estrellas solo aparecen si ya la escuchó */}
+      {listened ? (
+        <div className="form-field">
+          <span className="form-label">Puntuación</span>
+          <StarRating value={rating} onChange={setRating} />
+        </div>
+      ) : (
+        <p className="form-hint">
+          Se guarda como pendiente. Cuando la escuches, vas a poder puntuarla y marcarla como
+          favorita.
+        </p>
+      )}
+
+      <label>
+        {listened ? 'Reseña (opcional)' : 'Nota (opcional)'}
+        <textarea
+          value={review}
+          onChange={(event) => setReview(event.target.value)}
+          rows={3}
+          maxLength={MAX_REVIEW_LENGTH}
+          placeholder={listened ? '¿Qué te provoca esta canción?' : '¿Por qué la querés escuchar?'}
         />
-        Favorita
+        <span className="char-count">
+          {review.length}/{MAX_REVIEW_LENGTH}
+        </span>
       </label>
+
+      {/* Solo se puede marcar como favorita si ya la escuchó */}
+      {listened && (
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={favorite}
+            onChange={(event) => setFavorite(event.target.checked)}
+          />
+          Favorita
+        </label>
+      )}
 
       {error && (
         <p className="status-message error" role="alert">

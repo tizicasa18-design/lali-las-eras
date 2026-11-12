@@ -10,6 +10,8 @@ function AlbumCard({ album }) {
         <AlbumCover album={album} />
         <span className="album-card-year">{album.year}</span>
         <span className="album-card-title">{album.title}</span>
+        <span className="album-card-songs">{album.songs.length} canciones</span>
+        <span className="album-card-cta">Ver canciones →</span>
       </Link>
     </li>
   )
@@ -18,8 +20,12 @@ function AlbumCard({ album }) {
 function Eras() {
   return (
     <section className="page">
+      <p className="kicker">Discografía</p>
       <h1>Las eras</h1>
-      <p>Los seis álbumes de estudio de Lali, en orden cronológico.</p>
+      <p>
+        Los seis álbumes de estudio de Lali, en orden cronológico. Entrá a una era para ver sus
+        canciones y agregarlas a tu diario.
+      </p>
 
       <ul className="album-grid">
         {studioAlbums.map((album) => (
@@ -28,7 +34,7 @@ function Eras() {
       </ul>
 
       <h2>Era especial</h2>
-      <p>Colaboraciones y proyectos compartidos.</p>
+      <p>Colaboraciones y proyectos compartidos, fuera de los álbumes de estudio.</p>
       <ul className="album-grid">
         {specialAlbums.map((album) => (
           <AlbumCard key={album.id} album={album} />

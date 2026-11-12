@@ -67,28 +67,67 @@ function EraDetail() {
     loadRegisteredSongs() // vuelvo a leer de Firebase para mostrar lo que realmente se guardó
   }
 
+  // Cuántas canciones de este álbum ya están en el diario
+  const registeredCount = album.songs.filter((song, index) =>
+    registeredIds.includes(getSongId(album.id, index)),
+  ).length
+
   // Era anterior y siguiente (solo entre las 6 de estudio)
   const position = studioAlbums.findIndex((item) => item.id === album.id)
   const previousAlbum = position > 0 ? studioAlbums[position - 1] : null
   const nextAlbum = position >= 0 && position < studioAlbums.length - 1 ? studioAlbums[position + 1] : null
 
+  // Porcentaje de canciones registradas, para la barra de progreso
+  const progress = Math.round((registeredCount / album.songs.length) * 100)
+
   return (
     <section className="page">
-      <Link to="/eras" className="back-link">
-        ← Todas las eras
-      </Link>
+      {/* Miga de pan: muestra dónde estoy y permite volver */}
+      <nav className="breadcrumb" aria-label="Ubicación">
+        <Link to="/eras">Las eras</Link>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">{album.title}</span>
+      </nav>
 
       <div className="era-header">
         <AlbumCover album={album} />
         <div>
-          <p className="era-year">{album.special ? `Era especial · ${album.year}` : album.year}</p>
+          <p className="kicker">{album.special ? 'Era especial' : 'Álbum de estudio'}</p>
           <h1>{album.title}</h1>
           {album.artist && <p className="era-artist">{album.artist}</p>}
           <p>{album.description}</p>
+
+          {/* Ficha del álbum */}
+          <dl className="era-facts">
+            <div>
+              <dt>Año</dt>
+              <dd>{album.year}</dd>
+            </div>
+            <div>
+              <dt>Canciones</dt>
+              <dd>{album.songs.length}</dd>
+            </div>
+            <div>
+              <dt>En tu diario</dt>
+              <dd>{loading ? '…' : registeredCount}</dd>
+            </div>
+          </dl>
+
+          {!loading && (
+            <div className="progress" aria-hidden="true">
+              <div
+                className="progress-bar"
+                style={{ width: `${progress}%`, backgroundColor: album.colors.accent }}
+              />
+            </div>
+          )}
         </div>
       </div>
 
       <h2>Canciones</h2>
+      <p className="form-hint">
+        Agregá a tu diario las que escuchaste, o guardalas como pendientes para escucharlas después.
+      </p>
       <StatusMessage type={message.type} text={message.text} />
       {loading && <p className="loading">Cargando tu diario…</p>}
 
@@ -100,17 +139,21 @@ function EraDetail() {
             <li key={song}>
               <div className="song-row">
                 <span>{song}</span>
-                {isRegistered && <span className="song-registered">✓ En tu diario</span>}
+                {isRegistered && (
+                  <Link to="/diario" className="song-registered">
+                    ✓ En tu diario · Ver
+                  </Link>
+                )}
                 {!isRegistered && !loading && selectedIndex !== index && (
                   <button
                     className="button-secondary"
-                    aria-label={`Registrar ${song}`}
+                    aria-label={`Agregar ${song} a mi diario`}
                     onClick={() => {
                       setSelectedIndex(index)
                       setMessage({ type: '', text: '' })
                     }}
                   >
-                    Registrar
+                    + Agregar a mi diario
                   </button>
                 )}
               </div>
@@ -131,12 +174,14 @@ function EraDetail() {
       <nav className="era-nav" aria-label="Navegación entre eras">
         {previousAlbum && (
           <Link to={`/eras/${previousAlbum.id}`} onClick={resetForNewAlbum}>
-            ← {previousAlbum.title}
+            <span className="era-nav-label">← Era anterior</span>
+            {previousAlbum.title}
           </Link>
         )}
         {nextAlbum && (
           <Link to={`/eras/${nextAlbum.id}`} className="era-nav-next" onClick={resetForNewAlbum}>
-            {nextAlbum.title} →
+            <span className="era-nav-label">Era siguiente →</span>
+            {nextAlbum.title}
           </Link>
         )}
       </nav>

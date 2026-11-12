@@ -139,7 +139,7 @@ const albums = [
     year: 2026,
     special: true,
     artist: 'BOM (Lali + Miranda!)',
-    description: 'Era especial. Primer disco de BOM, el proyecto en conjunto de Lali con Ale Sergi y Juliana Gattas.',
+    description: 'Primer disco de BOM, el proyecto en conjunto de Lali con Ale Sergi y Juliana Gattas.',
     colors: { accent: '#E54138', secondary: '#171313' },
     songs: [
       'Bailar o morir',
