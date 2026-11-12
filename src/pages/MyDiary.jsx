@@ -94,25 +94,18 @@ function MyDiary() {
     setMessage({ type: '', text: '' })
   }
 
-  // UPDATE rápido: cambia favorita o escuchada con un solo toque
-  async function handleToggle(entry, field) {
-    // Si una pendiente pasa a escuchada, primero tiene que puntuarla:
-    // abro el formulario con "La escuché" ya marcado
-    if (field === 'listened' && !entry.listened) {
-      startEditing(entry, { ...entry, listened: true })
-      setMessage({ type: 'success', text: 'Puntuala para marcarla como escuchada.' })
-      return
-    }
+  // Una pendiente pasa a escuchada: primero tiene que puntuarla,
+  // así que abro el formulario con "La escuché" ya marcado
+  function markAsListened(entry) {
+    startEditing(entry, { ...entry, listened: true })
+    setMessage({ type: 'success', text: 'Puntuala para marcarla como escuchada.' })
+  }
 
-    // Si vuelve a pendiente, se le borran las estrellas y deja de ser favorita
-    const changes =
-      field === 'listened'
-        ? { listened: false, rating: 0, favorite: false }
-        : { favorite: !entry.favorite }
-
+  // UPDATE rápido: marca o desmarca favorita con un solo toque
+  async function handleToggleFavorite(entry) {
     setUpdatingId(entry.id)
     try {
-      await updateDiaryEntry(entry.id, changes)
+      await updateDiaryEntry(entry.id, { favorite: !entry.favorite })
       await loadEntries()
     } catch {
       setMessage({ type: 'error', text: 'No se pudo guardar el cambio. Probá de nuevo.' })
@@ -276,6 +269,7 @@ function MyDiary() {
               <DiaryForm
                 songTitle={entry.songTitle}
                 initialValues={editingValues}
+                alreadyListened={entry.listened}
                 submitLabel="Guardar cambios"
                 onSubmit={(values) => handleUpdate(entry, values)}
                 onCancel={() => setEditingId(null)}
@@ -314,21 +308,22 @@ function MyDiary() {
                   {entry.listened && (
                     <button
                       className={entry.favorite ? 'toggle active' : 'toggle'}
-                      onClick={() => handleToggle(entry, 'favorite')}
+                      onClick={() => handleToggleFavorite(entry)}
                       disabled={updatingId === entry.id}
                       aria-pressed={entry.favorite}
                     >
                       ♥ Favorita
                     </button>
                   )}
-                  <button
-                    className={entry.listened ? 'toggle active' : 'toggle'}
-                    onClick={() => handleToggle(entry, 'listened')}
-                    disabled={updatingId === entry.id}
-                    aria-pressed={entry.listened}
-                  >
-                    {entry.listened ? '✓ Escuchada' : 'Marcar como escuchada'}
-                  </button>
+                  {/* Escuchar no se puede deshacer: si ya está escuchada es una etiqueta fija,
+                      y solo las pendientes tienen el botón para marcarlas */}
+                  {entry.listened ? (
+                    <span className="listened-badge">✓ Escuchada</span>
+                  ) : (
+                    <button className="toggle" onClick={() => markAsListened(entry)}>
+                      Marcar como escuchada
+                    </button>
+                  )}
                 </div>
 
                 <div className="form-buttons">

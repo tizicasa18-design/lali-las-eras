@@ -15,7 +15,15 @@ const EMPTY_ENTRY = { rating: 0, review: '', listened: true, favorite: false }
 // initialValues: los datos con los que arranca (vacío al crear, el registro al editar)
 // onSubmit: la función que guarda en Firebase
 // onCancel: cierra el formulario
-function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubmit, onCancel }) {
+// alreadyListened: true si se edita una canción que ya estaba escuchada (no puede volver a pendiente)
+function DiaryForm({
+  songTitle,
+  initialValues = EMPTY_ENTRY,
+  submitLabel,
+  onSubmit,
+  onCancel,
+  alreadyListened = false,
+}) {
   const [rating, setRating] = useState(initialValues.rating)
   const [review, setReview] = useState(initialValues.review)
   const [listened, setListened] = useState(initialValues.listened)
@@ -68,14 +76,18 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
     <form className="diary-form" onSubmit={handleSubmit}>
       <p className="diary-form-title">{songTitle}</p>
 
-      <label className="checkbox">
-        <input
-          type="checkbox"
-          checked={listened}
-          onChange={(event) => setListened(event.target.checked)}
-        />
-        La escuché
-      </label>
+      {/* Si la canción ya estaba escuchada, no se puede volver a pendiente:
+          la casilla solo aparece al registrar una nueva o al editar una pendiente */}
+      {!alreadyListened && (
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={listened}
+            onChange={(event) => setListened(event.target.checked)}
+          />
+          La escuché
+        </label>
+      )}
 
       {/* Las estrellas solo aparecen si ya la escuchó */}
       {listened ? (

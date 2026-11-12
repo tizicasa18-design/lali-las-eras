@@ -8,7 +8,12 @@ service cloud.firestore {
 
       allow read, delete: if isOwner(userId);
 
-      allow create, update: if isOwner(userId) && isValidEntry(request.resource.data);
+      allow create: if isOwner(userId) && isValidEntry(request.resource.data);
+
+      // Al modificar, además: una canción escuchada no puede volver a pendiente
+      allow update: if isOwner(userId)
+        && isValidEntry(request.resource.data)
+        && (resource.data.listened == false || request.resource.data.listened == true);
     }
 
     // El usuario tiene que haber iniciado sesión (anónima) y ser el dueño

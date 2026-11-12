@@ -1203,6 +1203,21 @@ button.star:hover {
   color: var(--rojo);
 }
 
+/* "✓ Escuchada": etiqueta fija (no es un botón), porque escuchar no se puede deshacer */
+.listened-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  border: 2px solid var(--negro);
+  border-radius: 999px;
+  background-color: var(--negro);
+  color: var(--blanco);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* Activado: rojo */
 .toggle.active {
   background-color: var(--rojo);
