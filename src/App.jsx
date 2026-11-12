@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Eras from './pages/Eras'
 import EraDetail from './pages/EraDetail'
@@ -12,6 +13,8 @@ import NotFound from './pages/NotFound'
 function App() {
   return (
     <BrowserRouter>
+      {/* Al cambiar de página, vuelve arriba de todo */}
+      <ScrollToTop />
       <Navbar />
       <main className="main">
         <Routes>
