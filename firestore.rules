@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Cada usuario solo puede ver y modificar SU diario.
+    match /users/{userId}/diary/{songId} {
+
+      allow read, delete: if isOwner(userId);
+
+      allow create, update: if isOwner(userId) && isValidEntry(request.resource.data);
+    }
+
+    // El usuario tiene que haber iniciado sesión (anónima) y ser el dueño
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Controles básicos de los datos que se guardan
+    function isValidEntry(data) {
+      return data.rating is int
+        && data.rating >= 1 && data.rating <= 5
+        && data.review is string
+        && data.review.size() <= 500
+        && data.listened is bool
+        && data.favorite is bool
+        && data.songTitle is string
+        && data.albumId is string;
+    }
+  }
+}
