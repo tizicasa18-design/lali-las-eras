@@ -20,12 +20,15 @@ function AlbumCard({ album }) {
 function Eras() {
   return (
     <section className="page">
-      <p className="kicker">Discografía</p>
-      <h1>Las eras</h1>
-      <p>
-        Los seis álbumes de estudio de Lali, en orden cronológico. Entrá a una era para ver sus
-        canciones y agregarlas a tu diario.
-      </p>
+      {/* Encabezado negro, igual en todas las secciones */}
+      <header className="page-header">
+        <p className="kicker">Discografía</p>
+        <h1>Las eras</h1>
+        <p>
+          Los seis álbumes de estudio de Lali, en orden cronológico. Entrá a una era para ver sus
+          canciones y agregarlas a tu diario.
+        </p>
+      </header>
 
       <ul className="album-grid">
         {studioAlbums.map((album) => (
@@ -33,13 +36,16 @@ function Eras() {
         ))}
       </ul>
 
-      <h2>Era especial</h2>
-      <p>Colaboraciones y proyectos compartidos, fuera de los álbumes de estudio.</p>
-      <ul className="album-grid">
-        {specialAlbums.map((album) => (
-          <AlbumCard key={album.id} album={album} />
-        ))}
-      </ul>
+      {/* Bloque invertido: fondo negro y letra blanca */}
+      <div className="special-section">
+        <h2>Era especial</h2>
+        <p>Colaboraciones y proyectos compartidos, fuera de los álbumes de estudio.</p>
+        <ul className="album-grid">
+          {specialAlbums.map((album) => (
+            <AlbumCard key={album.id} album={album} />
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

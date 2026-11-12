@@ -1,18 +1,36 @@
 /* Estilos de LALI: LAS ERAS
-   V1: diseño sobrio, en blanco y negro con acentos rojos.
-   La identidad rock editorial completa queda para la V3. */
+   V3: identidad rock editorial / grunge.
+   Sistema de solo 3 colores (negro, blanco y rojo), bordes redondeados,
+   sombras duras tipo fanzine y el mismo estilo de botón en toda la página. */
+
+/* ================= 1. Variables (el "sistema") ================= */
 
 :root {
-  --color-negro: #171313;
-  --color-papel: #f2eee6;
-  --color-rojo: #e54138;
-  --color-gris: #88817e;
-  --color-beige: #bbb0a4;
+  /* Colores: solo estos tres */
+  --negro: #171313;
+  --blanco: #ffffff;
+  --rojo: #e54138;
 
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Tipografías */
+  --font-titulo: 'Anton', Impact, sans-serif;
+  --font-cita: 'Cormorant Garamond', Georgia, serif;
+  --font-texto: 'Space Grotesk', system-ui, sans-serif;
+
+  /* Redondeados */
+  --radio-boton: 10px;
+  --radio-tarjeta: 16px;
+  --radio-bloque: 22px;
+
+  /* Sombras */
+  --sombra: 6px 6px 0 var(--negro); /* sombra dura, estilo fanzine */
+  --sombra-roja: 6px 6px 0 var(--rojo);
+  --aura: 0 0 28px rgba(229, 65, 56, 0.45); /* aura roja de las portadas */
+  --aura-fuerte: 0 0 55px rgba(229, 65, 56, 0.95);
+
+  font-family: var(--font-texto);
   line-height: 1.5;
-  color: var(--color-negro);
-  background-color: var(--color-papel);
+  color: var(--negro);
+  background-color: var(--blanco);
 }
 
 *,
@@ -35,65 +53,213 @@ a {
   color: inherit;
 }
 
-h1,
-h2 {
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
-h2 {
-  margin-top: 2.5rem;
-}
-
 /* Foco visible para quien navega con teclado */
 :focus-visible {
-  outline: 3px solid var(--color-rojo);
-  outline-offset: 2px;
+  outline: 3px solid var(--rojo);
+  outline-offset: 3px;
 }
 
-/* ---------- Estructura general ---------- */
+/* ================= 2. Títulos ================= */
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titulo);
+  font-weight: 400; /* Anton ya es gruesa */
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* El h1 lleva una sombra roja desplazada, como impresión corrida */
+h1 {
+  font-size: clamp(2.75rem, 9vw, 5rem);
+  margin: 0.5rem 0 1rem;
+  text-shadow: 4px 4px 0 var(--rojo);
+}
+
+h2 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  margin-top: 3rem;
+}
+
+/* Barra roja debajo de cada subtítulo */
+h2::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 6px;
+  margin-top: 0.6rem;
+  border-radius: 3px;
+  background-color: var(--rojo);
+}
+
+/* Etiqueta chica arriba de los títulos: parece una cinta pegada, apenas torcida */
+.kicker {
+  display: inline-block;
+  margin: 0;
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+  background-color: var(--rojo);
+  color: var(--blanco);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transform: rotate(-2deg);
+}
+
+/* ================= 3. Estructura ================= */
 
 .main {
   flex: 1;
 }
 
 .page {
-  max-width: 60rem;
+  max-width: 62rem;
   margin: 0 auto;
   padding: 2rem 1rem 3rem;
 }
 
-.button {
+/* Bloque negro: se usa en los encabezados de sección y en las partes destacadas */
+.hero,
+.page-header,
+.era-header,
+.special-block,
+.special-section,
+.diary-filters {
+  background-color: var(--negro);
+  color: var(--blanco);
+}
+
+.page-header,
+.era-header,
+.special-block,
+.special-section {
+  padding: 2.5rem 2rem;
+  border-radius: var(--radio-bloque);
+}
+
+.page-header {
+  margin-bottom: 2.5rem;
+}
+
+.page-header p {
+  max-width: 38rem;
+}
+
+/* ================= 4. Botones (un solo sistema) ================= */
+
+.button,
+.button-secondary,
+.button-danger,
+.toggle,
+.navbar-toggle {
   display: inline-block;
-  padding: 0.75rem 1.25rem;
-  background-color: var(--color-negro);
-  color: var(--color-papel);
-  text-decoration: none;
+  padding: 0.7rem 1.25rem;
+  border: 2px solid var(--negro);
+  border-radius: var(--radio-boton);
+  font-family: var(--font-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
   text-transform: uppercase;
-  font-weight: bold;
-  border: none;
+  letter-spacing: 0.06em;
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
 }
 
-.button:hover {
-  background-color: var(--color-rojo);
+/* Principal: negro, se pone rojo al tocarlo */
+.button {
+  background-color: var(--negro);
+  color: var(--blanco);
 }
 
-/* ---------- Menú ---------- */
+/* Secundario: contorno negro, también se pone rojo */
+.button-secondary {
+  background-color: var(--blanco);
+  color: var(--negro);
+}
+
+/* Peligro (Eliminar): contorno rojo */
+.button-danger {
+  background-color: var(--blanco);
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+.button:hover,
+.button-secondary:hover,
+.button-danger:hover {
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+  color: var(--blanco);
+  transform: translateY(-2px);
+}
+
+/* Versión chica (por ejemplo, "+ Agregar a mi diario") */
+.button-small {
+  padding: 0.5rem 0.95rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.button:disabled,
+.button-secondary:disabled,
+.toggle:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+/* Botones sobre fondo negro: el principal es rojo y el secundario tiene borde blanco */
+.hero .button,
+.special-block .button {
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+.hero .button:hover,
+.special-block .button:hover {
+  background-color: var(--blanco);
+  border-color: var(--blanco);
+  color: var(--negro);
+}
+
+.hero .button-secondary {
+  background-color: transparent;
+  border-color: var(--blanco);
+  color: var(--blanco);
+}
+
+.hero .button-secondary:hover {
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+.form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ================= 5. Menú ================= */
 
 .navbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
-  background-color: var(--color-negro);
-  color: var(--color-papel);
+  padding: 1rem 1.25rem;
+  background-color: var(--negro);
+  color: var(--blanco);
+  border-bottom: 5px solid var(--rojo);
 }
 
 .navbar-logo {
-  font-weight: bold;
-  letter-spacing: 0.05em;
+  font-family: var(--font-titulo);
+  font-size: 1.5rem;
+  letter-spacing: 0.03em;
   text-decoration: none;
 }
 
@@ -103,32 +269,43 @@ h2 {
 }
 
 .navbar-links a {
+  font-size: 0.85rem;
+  font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+.navbar-links a:hover {
+  color: var(--rojo);
 }
 
 /* NavLink le agrega la clase "active" al link de la pantalla actual */
 .navbar-links a.active {
-  color: var(--color-rojo);
+  color: var(--rojo);
 }
 
 .navbar-toggle {
   display: none;
-  background: none;
-  border: 1px solid var(--color-papel);
-  color: var(--color-papel);
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
+  padding: 0.4rem 0.9rem;
+  background-color: transparent;
+  border-color: var(--blanco);
+  color: var(--blanco);
 }
 
-/* ---------- Pie de página ---------- */
+.navbar-toggle:hover {
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+/* ================= 6. Pie de página ================= */
 
 .footer {
-  padding: 2rem 1rem 1rem;
-  background-color: var(--color-negro);
-  color: var(--color-beige);
+  padding: 2.5rem 1.25rem 1rem;
+  background-color: var(--negro);
+  color: var(--blanco);
   font-size: 0.85rem;
+  border-top: 5px solid var(--rojo);
 }
 
 .footer p {
@@ -140,14 +317,15 @@ h2 {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 1.5rem;
-  max-width: 60rem;
+  max-width: 62rem;
   margin: 0 auto;
 }
 
 .footer-logo {
-  color: var(--color-papel);
-  font-weight: bold;
-  letter-spacing: 0.05em;
+  font-family: var(--font-titulo);
+  font-size: 1.8rem;
+  letter-spacing: 0.03em;
+  text-shadow: 3px 3px 0 var(--rojo);
 }
 
 .footer-links {
@@ -156,78 +334,100 @@ h2 {
 }
 
 .footer-links a {
-  color: var(--color-papel);
+  font-weight: 700;
   text-transform: uppercase;
   text-decoration: none;
 }
 
 .footer-links a:hover {
-  color: var(--color-rojo);
+  color: var(--rojo);
 }
 
 .footer-credits {
-  max-width: 60rem;
+  max-width: 62rem;
   margin: 1.5rem auto 0 !important;
   padding-top: 1rem;
-  border-top: 1px solid var(--color-gris);
+  border-top: 1px solid var(--blanco);
   font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-/* ---------- Inicio ---------- */
+/* ================= 7. Tarjetas (mismo estilo en todo el sitio) ================= */
+
+.step,
+.timeline-card,
+.diary-entry,
+.diary-form,
+.empty-state {
+  background-color: var(--blanco);
+  border: 2px solid var(--negro);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra);
+}
+
+/* ================= 8. Inicio ================= */
+
+/* Presentación: bloque negro de lado a lado, como la tapa de una revista */
+.hero .page {
+  padding-top: 4rem;
+  padding-bottom: 4.5rem;
+}
 
 .home-title {
-  font-size: clamp(2.5rem, 10vw, 5rem);
-  margin-bottom: 1rem;
+  font-size: clamp(3.5rem, 14vw, 8rem);
+  line-height: 1.2; /* deja lugar para la tilde de "ÍCONO" */
+  margin-bottom: 1.5rem;
+  text-shadow: 6px 6px 0 var(--rojo);
 }
 
 .home-intro {
   max-width: 35rem;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Presentación */
-.hero {
-  border-bottom: 3px solid var(--color-negro);
-}
-
-.hero .page {
-  padding-top: 3rem;
-}
-
-.kicker {
-  margin: 0;
-  color: var(--color-rojo);
-  font-size: 0.85rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+  font-family: var(--font-cita);
+  font-style: italic;
+  font-size: 1.5rem;
+  line-height: 1.3;
 }
 
 /* Cómo funciona */
+/* "La idea": el párrafo que explica para qué sirve el diario */
+.home-idea {
+  max-width: 44rem;
+  margin-bottom: 3rem;
+  padding-left: 1.5rem;
+  border-left: 6px solid var(--rojo);
+}
+
+.home-idea-text {
+  font-family: var(--font-cita);
+  font-style: italic;
+  font-size: 1.75rem;
+  line-height: 1.3;
+}
+
 .steps {
   list-style: none;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .step {
-  padding: 1.25rem;
-  background-color: #fff;
-  border: 2px solid var(--color-negro);
+  padding: 1.5rem;
 }
 
 .step-number {
-  color: var(--color-rojo);
-  font-size: 2rem;
-  font-weight: bold;
+  color: var(--rojo);
+  font-family: var(--font-titulo);
+  font-size: 3.5rem;
+  line-height: 1;
 }
 
 .step h3 {
-  margin: 0.25rem 0 0.5rem;
-  text-transform: uppercase;
+  margin: 0.5rem 0;
+  font-size: 1.5rem;
 }
 
 .step p {
@@ -240,72 +440,69 @@ h2 {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .timeline-card {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1rem;
-  background-color: #fff;
-  border-top: 8px solid var(--color-negro); /* el color cambia según la era */
+  padding: 1.1rem;
   text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .timeline-card:hover {
-  outline: 2px solid var(--color-negro);
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--rojo);
 }
 
 .timeline-year {
-  font-size: 1.8rem;
-  font-weight: bold;
+  color: var(--rojo);
+  font-family: var(--font-titulo);
+  font-size: 2.6rem;
+  line-height: 1;
 }
 
 .timeline-title {
-  font-weight: bold;
+  margin-top: 0.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .timeline-songs {
   margin-top: auto;
   padding-top: 0.5rem;
-  color: var(--color-gris);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Era especial */
+/* Era especial (Inicio) */
 .special-block {
-  padding: 2rem;
-  background-color: var(--color-negro);
-  color: var(--color-papel);
+  box-shadow: var(--sombra-roja);
 }
 
 .special-block h2 {
-  margin: 0.25rem 0;
+  margin: 1rem 0 0.5rem;
+  font-size: clamp(2rem, 7vw, 3.5rem);
 }
 
 .special-artist {
   margin: 0;
-  color: var(--color-beige);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.special-block .button {
-  background-color: var(--color-rojo);
-}
-
-.special-block .button:hover {
-  background-color: var(--color-papel);
-  color: var(--color-negro);
-}
-
-/* ---------- Las eras ---------- */
+/* ================= 9. Las eras ================= */
 
 .album-grid {
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 2rem 1.75rem;
 }
 
 .album-card a {
@@ -315,144 +512,274 @@ h2 {
 
 .album-card-year {
   display: block;
-  margin-top: 0.5rem;
-  color: var(--color-gris);
+  margin-top: 0.9rem;
+  color: var(--rojo);
+  font-weight: 700;
   font-size: 0.85rem;
 }
 
 .album-card-title {
   display: block;
-  font-weight: bold;
+  font-family: var(--font-titulo);
+  font-size: 1.4rem;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
 .album-card-songs {
   display: block;
-  color: var(--color-gris);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .album-card-cta {
-  display: block;
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: bold;
-  text-decoration: underline;
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--rojo);
 }
 
 .album-card a:hover .album-card-title {
-  color: var(--color-rojo);
+  color: var(--rojo);
 }
 
-/* Portada provisoria */
+/* Era especial (Las eras): bloque invertido */
+.special-section {
+  margin-top: 3.5rem;
+}
+
+.special-section h2 {
+  margin-top: 0;
+}
+
+/* Portada de cada era: redondeada y con aura roja detrás */
 .album-cover {
+  position: relative;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: flex-end;
   padding: 0.75rem;
-  border: 2px solid var(--color-negro);
+  overflow: hidden;
+  background-color: var(--negro);
+  border: 2px solid var(--negro);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--aura);
+}
+
+/* La imagen llena el cuadrado sin deformarse (recorta lo que sobra) */
+.album-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
 }
 
 .album-cover span {
-  background-color: var(--color-negro);
-  color: var(--color-papel);
-  padding: 0.2rem 0.4rem;
-  font-size: 0.8rem;
-  font-weight: bold;
+  color: var(--blanco);
+  font-family: var(--font-titulo);
   text-transform: uppercase;
 }
 
-/* ---------- Detalle de era ---------- */
+/* Al pasar el mouse: la portada sube, el aura se hace más fuerte y la foto se acerca */
+.album-card .album-cover {
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
 
-/* Miga de pan */
+.album-card .album-cover img {
+  transition: transform 0.4s;
+}
+
+.album-card a:hover .album-cover {
+  transform: translateY(-6px);
+  border-color: var(--rojo);
+  box-shadow: var(--aura-fuerte);
+}
+
+.album-card a:hover .album-cover img {
+  transform: scale(1.1);
+}
+
+/* ================= 10. Detalle de era ================= */
+
 .breadcrumb {
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: var(--color-gris);
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .breadcrumb a {
-  color: var(--color-negro);
+  text-decoration-color: var(--rojo);
+  text-decoration-thickness: 2px;
 }
 
-/* Ficha del álbum */
-.era-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin: 1rem 0 0.75rem;
+.breadcrumb a:hover {
+  color: var(--rojo);
 }
 
-.era-facts dt {
-  color: var(--color-gris);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
-.era-facts dd {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* Barra de progreso: cuántas canciones de la era están en el diario */
-.progress {
-  height: 8px;
-  background-color: var(--color-beige);
-}
-
-.progress-bar {
-  height: 100%;
-}
-
+/* Ficha del álbum: bloque negro con la portada */
 .era-header {
   display: grid;
-  grid-template-columns: 14rem 1fr;
-  gap: 2rem;
-  align-items: end;
+  grid-template-columns: 16rem 1fr;
+  gap: 2.5rem;
+  align-items: start;
 }
 
 .era-header h1 {
-  margin: 0.25rem 0;
+  margin: 0.75rem 0 0.5rem;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
 }
 
 .era-artist {
   margin: 0;
-  color: var(--color-gris);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
+/* Descripción de la era, en letra de cita */
+.era-description {
+  max-width: 34rem;
+  font-family: var(--font-cita);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+.era-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 1.25rem 0 1rem;
+}
+
+.era-facts dt {
+  color: var(--rojo);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.era-facts dd {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+/* Barra de progreso: cuántas canciones de la era están en el diario */
+.progress {
+  height: 12px;
+  border: 2px solid var(--blanco);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--rojo);
+}
+
+/* Lista de canciones */
 .song-list {
-  padding-left: 1.5rem;
+  padding-left: 2rem;
 }
 
 .song-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--color-beige);
+  padding: 0.6rem 0;
+  border-bottom: 2px solid var(--negro);
 }
 
+/* El número de cada canción, rojo y en tipografía de título */
+.song-list li::marker {
+  color: var(--rojo);
+  font-family: var(--font-titulo);
+}
+
+.song-row {
+  display: flex;
+  flex-wrap: wrap; /* en celular los botones bajan abajo del nombre */
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  font-weight: 500;
+}
+
+/* Mi diario: datos de la canción a la izquierda y "Escuchar" a la derecha */
+.diary-entry-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* El título ocupa el espacio que sobra y, si es largo, baja de renglón él (no el botón) */
+.diary-entry-top > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.diary-entry-top .button {
+  flex-shrink: 0;
+}
+
+/* Botones de cada canción: Escuchar + Agregar */
+.song-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.song-registered {
+  color: var(--rojo);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.song-registered:hover {
+  text-decoration: underline;
+}
+
+/* Era anterior / siguiente */
 .era-nav {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: 3px solid var(--color-negro);
+  border-top: 4px solid var(--negro);
 }
 
 .era-nav a {
-  font-weight: bold;
+  font-family: var(--font-titulo);
+  font-size: 1.4rem;
+  text-transform: uppercase;
   text-decoration: none;
 }
 
 .era-nav a:hover {
-  color: var(--color-rojo);
+  color: var(--rojo);
 }
 
 .era-nav-label {
   display: block;
-  color: var(--color-gris);
-  font-size: 0.8rem;
-  font-weight: normal;
-  text-transform: uppercase;
+  color: var(--rojo);
+  font-family: var(--font-texto);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .era-nav-next {
@@ -460,150 +787,300 @@ h2 {
   text-align: right;
 }
 
-/* ---------- Botones y mensajes ---------- */
-
-.button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.button-secondary,
-.button-danger {
-  display: inline-block;
-  padding: 0.5rem 0.9rem;
-  background: none;
-  border: 2px solid var(--color-negro);
-  color: var(--color-negro);
-  font: inherit;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Cuando el botón secundario está al lado del principal, igualo el tamaño */
-.button + .button-secondary {
-  padding: 0.6rem 1.15rem;
-  text-transform: uppercase;
-}
-
-.button-secondary:hover {
-  background-color: var(--color-negro);
-  color: var(--color-papel);
-}
-
-.button-danger {
-  border-color: var(--color-rojo);
-  color: var(--color-rojo);
-}
-
-.button-danger:hover {
-  background-color: var(--color-rojo);
-  color: var(--color-papel);
-}
+/* ================= 11. Mensajes ================= */
 
 .status-message {
-  padding: 0.75rem 1rem;
-  border-left: 4px solid;
-  background-color: #fff;
-}
-
-.status-message.success {
-  border-color: #2e7d32;
+  padding: 0.8rem 1.1rem;
+  border-radius: var(--radio-boton);
+  background-color: var(--negro);
+  color: var(--blanco);
+  font-weight: 700;
 }
 
 .status-message.error {
-  border-color: var(--color-rojo);
-  color: #a3241c;
+  background-color: var(--rojo);
 }
 
 .loading {
-  color: var(--color-gris);
   font-style: italic;
 }
 
-/* ---------- Lista de canciones ---------- */
-
-.song-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+.form-hint {
+  margin: 0;
+  font-size: 0.9rem;
 }
 
-.song-registered {
-  color: var(--color-gris);
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-.song-registered:hover {
-  color: var(--color-rojo);
-}
-
-.song-row .button-secondary {
-  flex-shrink: 0;
-  white-space: nowrap;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.85rem;
-}
-
-/* ---------- Formulario del diario ---------- */
+/* ================= 12. Formulario del diario ================= */
 
 .diary-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin: 1rem 0;
-  padding: 1rem;
-  background-color: #fff;
-  border: 2px solid var(--color-negro);
+  padding: 1.25rem;
 }
 
 .diary-form-title {
   margin: 0;
-  font-weight: bold;
+  font-family: var(--font-titulo);
+  font-size: 1.4rem;
   text-transform: uppercase;
 }
 
-.diary-form label {
+.diary-form label,
+.form-label {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  font-weight: bold;
-  font-size: 0.9rem;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .diary-form label.checkbox {
   flex-direction: row;
   align-items: center;
-  font-weight: normal;
+  gap: 0.5rem;
 }
 
-.diary-form select,
+/* Las casillas de verificación en rojo */
+input[type='checkbox'] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--rojo);
+}
+
 .diary-form textarea {
+  padding: 0.7rem;
+  border: 2px solid var(--negro);
+  border-radius: var(--radio-boton);
   font: inherit;
-  padding: 0.5rem;
-  border: 1px solid var(--color-gris);
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Disparadores de la reseña: pastillas con contorno rojo punteado, como notas pegadas */
+.prompt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.prompt-chip {
+  padding: 0.45rem 0.9rem;
+  border: 2px dashed var(--rojo);
+  border-radius: 999px;
+  background-color: var(--blanco);
+  color: var(--negro);
+  font-family: var(--font-cita);
+  font-style: italic;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.prompt-chip:hover,
+.prompt-chip:focus-visible {
+  background-color: var(--rojo);
+  border-style: solid;
+  color: var(--blanco);
 }
 
 .char-count {
   align-self: flex-end;
-  font-weight: normal;
-  color: var(--color-gris);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
-.form-buttons {
+/* Estrellas: llenas en rojo, vacías solo con el contorno negro */
+.stars {
+  display: flex;
+  gap: 0.2rem;
+  margin: 0.25rem 0;
+}
+
+.star {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--negro);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.star.filled {
+  color: var(--rojo);
+  -webkit-text-stroke: 1.5px var(--rojo);
+}
+
+button.star {
+  background: none;
+  border: none;
+  padding: 0.1rem;
+  cursor: pointer;
+  font-size: 2rem;
+  transition: transform 0.15s;
+}
+
+button.star:hover {
+  transform: scale(1.2);
+}
+
+.stars-readonly .star {
+  font-size: 1.4rem;
+}
+
+/* ================= 13. Mi diario ================= */
+
+/* Contador dentro del encabezado negro */
+.diary-counter {
+  margin-bottom: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+}
+
+.diary-counter strong {
+  color: var(--rojo);
+  font-family: var(--font-titulo);
+  font-size: 1.6rem;
+  font-weight: 400;
+  vertical-align: -0.15em;
+}
+
+/* Filtros: bloque negro con desplegables rojos */
+.diary-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem;
+  border-radius: var(--radio-tarjeta);
 }
 
-/* ---------- Mi diario ---------- */
+.diary-filters label {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.diary-filters select {
+  width: 100%;
+  padding: 0.65rem 2.5rem 0.65rem 0.9rem;
+  appearance: none; /* saco la flecha del navegador para poner la mía */
+  border: 2px solid var(--rojo);
+  border-radius: var(--radio-boton);
+  background-color: var(--rojo);
+  /* Flecha blanca dibujada con un SVG */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  color: var(--blanco);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.diary-filters select:hover {
+  border-color: var(--blanco);
+}
+
+.diary-filters option {
+  background-color: var(--negro);
+  color: var(--blanco);
+}
+
+/* Tus números: tres tarjetas, la del top ocupa más lugar */
+.diary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.stat-card {
+  padding: 1.25rem 1.5rem;
+  background-color: var(--blanco);
+  border: 2px solid var(--negro);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-roja);
+}
+
+.stat-card p {
+  margin: 0;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rojo);
+}
+
+.stat-big {
+  margin: 0.35rem 0 !important;
+  font-family: var(--font-titulo);
+  font-size: 2.6rem;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.stat-detail {
+  font-size: 0.85rem;
+}
+
+.stat-card-top {
+  grid-column: 1 / -1; /* el top ocupa todo el ancho */
+}
+
+.stat-top {
+  margin: 0.75rem 0 0;
+  padding-left: 1.75rem;
+}
+
+.stat-top li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed var(--negro);
+  font-weight: 500;
+}
+
+.stat-top li:last-child {
+  border-bottom: none;
+}
+
+.stat-top li::marker {
+  color: var(--rojo);
+  font-family: var(--font-titulo);
+}
+
+.stat-top-rating {
+  color: var(--rojo);
+  font-weight: 700;
+  white-space: nowrap;
+}
 
 .empty-state {
-  padding: 1.5rem;
-  border: 2px dashed var(--color-beige);
+  padding: 1.75rem;
+  border-style: dashed;
 }
 
 .empty-state h2 {
@@ -620,108 +1097,59 @@ h2 {
 }
 
 .diary-entry {
-  margin-bottom: 1.25rem;
-  padding: 1.25rem 1.25rem 1.25rem 1.5rem;
-  background-color: #fff;
-  border-left: 8px solid var(--color-negro); /* el color cambia según la era */
+  margin-bottom: 1.75rem;
+  padding: 1.4rem 1.5rem;
 }
 
-.diary-counter {
-  color: var(--color-gris);
-}
-
-.diary-counter strong {
-  color: var(--color-negro);
-}
-
-/* Filtros */
-.diary-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  padding: 1rem;
-  border: 2px solid var(--color-negro);
-}
-
-.diary-filters label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-weight: bold;
-  font-size: 0.85rem;
+.diary-entry-album {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.diary-filters label {
-  flex: 1 1 12rem;
+.diary-entry-album a {
+  color: var(--rojo);
+  text-decoration: none;
 }
 
-.diary-filters select {
-  font: inherit;
-  padding: 0.4rem;
-  width: 100%;
+.diary-entry-album a:hover {
+  text-decoration: underline;
 }
 
-/* Estrellas */
-.stars {
-  display: flex;
-  gap: 0.2rem;
-  margin: 0.25rem 0;
-}
-
-.star {
-  color: var(--color-beige);
-  font-size: 1.6rem;
-  line-height: 1;
-}
-
-.star.filled {
-  color: var(--color-rojo);
-}
-
-button.star {
-  background: none;
-  border: none;
-  padding: 0.1rem;
-  cursor: pointer;
+.diary-entry-title {
+  margin: 0.35rem 0;
   font-size: 2rem;
 }
 
-button.star:hover {
-  transform: scale(1.15);
+/* En los registros el título no lleva la barra roja de los subtítulos */
+.diary-entry-title::after {
+  display: none;
 }
 
-.stars-readonly .star {
-  font-size: 1.3rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.form-label {
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.form-hint {
-  margin: 0;
-  color: var(--color-gris);
-  font-size: 0.9rem;
-}
-
-/* Etiqueta de canción pendiente en Mi diario */
+/* Etiqueta de canción pendiente */
 .pending-badge {
   display: inline-block;
   margin: 0.25rem 0;
-  padding: 0.2rem 0.6rem;
-  border: 1px dashed var(--color-gris);
-  color: var(--color-gris);
-  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border: 2px dashed var(--rojo);
+  border-radius: 999px;
+  color: var(--rojo);
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.diary-entry-review {
+  margin: 0.75rem 0;
+  padding-left: 1rem;
+  border-left: 4px solid var(--rojo);
+  font-family: var(--font-cita);
+  font-style: italic;
+  font-size: 1.4rem;
+  line-height: 1.3;
 }
 
 /* Botones de favorita / escuchada */
@@ -729,56 +1157,29 @@ button.star:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0.75rem 0;
+  margin: 0.9rem 0;
 }
 
 .toggle {
-  padding: 0.35rem 0.75rem;
-  background: none;
-  border: 1px solid var(--color-gris);
-  color: var(--color-gris);
-  font-size: 0.85rem;
-  cursor: pointer;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--blanco);
+  color: var(--negro);
+  font-size: 0.75rem;
 }
 
+.toggle:hover {
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+/* Activado: rojo */
 .toggle.active {
-  background-color: var(--color-negro);
-  border-color: var(--color-negro);
-  color: var(--color-papel);
+  background-color: var(--rojo);
+  border-color: var(--rojo);
+  color: var(--blanco);
 }
 
-.toggle:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-
-.diary-entry-album {
-  margin: 0;
-  color: var(--color-gris);
-  font-size: 0.85rem;
-}
-
-.diary-entry-title {
-  margin: 0.25rem 0;
-  font-size: 1.4rem;
-}
-
-.diary-entry-rating {
-  margin: 0;
-  color: var(--color-rojo);
-  font-size: 1.2rem;
-  letter-spacing: 0.1em;
-}
-
-.diary-entry-review {
-  margin: 0.75rem 0;
-  padding-left: 1rem;
-  border-left: 3px solid var(--color-beige);
-  font-style: italic;
-  font-size: 1.05rem;
-}
-
-/* ---------- Celular ---------- */
+/* ================= 14. Celular ================= */
 
 @media (max-width: 640px) {
   .navbar-toggle {
@@ -799,12 +1200,20 @@ button.star:hover {
   }
 
   .navbar-links a {
-    padding: 0.75rem 0;
-    border-top: 1px solid var(--color-gris);
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--blanco);
+  }
+
+  .page-header,
+  .era-header,
+  .special-block,
+  .special-section {
+    padding: 1.75rem 1.25rem;
   }
 
   .era-header {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .era-header .album-cover {

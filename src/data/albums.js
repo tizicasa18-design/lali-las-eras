@@ -5,10 +5,10 @@
 const albums = [
   {
     id: 'a-bailar',
+    cover: '/images/a-bailar.jpg',
     title: 'A Bailar',
     year: 2014,
-    description: 'Primer álbum de estudio. Pop bailable y el comienzo de su carrera solista.',
-    colors: { accent: '#D8AD60', secondary: '#171313' },
+    description: 'El comienzo de todo. Lali da sus primeros pasos como solista con un álbum lleno de energía, pop y ganas de bailar. Una era fresca, juvenil y colorida que marca el inicio de su identidad musical.',
     songs: [
       'Asesina',
       'Histeria',
@@ -24,10 +24,10 @@ const albums = [
   },
   {
     id: 'soy',
+    cover: '/images/soy.jpg',
     title: 'Soy',
     year: 2016,
-    description: 'Segundo álbum de estudio.',
-    colors: { accent: '#F35088', secondary: '#E73633' },
+    description: 'Una Lali más segura, que empieza a encontrar su propio estilo y a mostrar quién es. Con sonidos pop y letras más personales, esta era representa crecimiento, confianza y autenticidad.',
     songs: [
       'Soy',
       'Único',
@@ -46,10 +46,10 @@ const albums = [
   },
   {
     id: 'brava',
+    cover: '/images/brava.jpg',
     title: 'Brava',
     year: 2018,
-    description: 'Tercer álbum de estudio.',
-    colors: { accent: '#A92229', secondary: '#CFA36B' },
+    description: 'Lali muestra su lado más atrevido y poderoso. Mezclando pop con ritmos urbanos y latinos, Brava es una era de actitud, sensualidad y libertad, donde se anima a experimentar con nuevos sonidos.',
     songs: [
       'OMG!',
       'Tu Novia',
@@ -67,10 +67,10 @@ const albums = [
   },
   {
     id: 'libra',
+    cover: '/images/libra.jpg',
     title: 'Libra',
     year: 2020,
-    description: 'Cuarto álbum de estudio.',
-    colors: { accent: '#D7914C', secondary: '#E9D6B4' },
+    description: 'Una etapa de cambios, exploración y búsqueda de equilibrio. Lali combina diferentes estilos musicales y muestra una faceta más madura, jugando entre lo romántico, lo urbano y lo experimental.',
     songs: [
       'Eclipse',
       'Ladrón (con Cazzu)',
@@ -87,10 +87,10 @@ const albums = [
   },
   {
     id: 'lali',
+    cover: '/images/lali.jpg',
     title: 'LALI',
     year: 2023,
-    description: 'Quinto álbum de estudio.',
-    colors: { accent: '#C2C6CD', secondary: '#F2EEE6' },
+    description: 'El regreso de la diva pop en su máxima expresión. Con mucho baile, estética dosmilera y una actitud provocadora, Lali celebra su libertad, su identidad y el poder de ser ella misma sin pedir permiso.',
     songs: [
       'Obsesión',
       'Disciplina',
@@ -109,10 +109,10 @@ const albums = [
   },
   {
     id: 'no-vayas-a-atender',
+    cover: '/images/no-vayas-a-atender.jpg',
     title: 'No vayas a atender cuando el demonio llama',
     year: 2025,
-    description: 'Sexto álbum de estudio.',
-    colors: { accent: '#9F1F1F', secondary: '#88817E' },
+    description: 'La era más rockera y rebelde de Lali. Con guitarras, letras provocadoras y una estética más oscura, rompe con lo esperado y muestra su versión más desafiante, auténtica y sin filtros.',
     songs: [
       'Popstar',
       'Lokura',
@@ -135,12 +135,12 @@ const albums = [
   // Por eso tiene special: true y se muestra aparte de las 6 eras.
   {
     id: 'bom-bailar-o-morir',
+    cover: '/images/bom-bailar-o-morir.jpg',
     title: 'Bailar o morir',
     year: 2026,
     special: true,
     artist: 'BOM (Lali + Miranda!)',
-    description: 'Primer disco de BOM, el proyecto en conjunto de Lali con Ale Sergi y Juliana Gattas.',
-    colors: { accent: '#E54138', secondary: '#171313' },
+    description: 'Lali y Miranda! unen sus universos para crear BOM, una nueva era llena de pop, electrónica y energía. Con una estética futurista y retro, este proyecto celebra la libertad, el baile y las ganas de vivir la música sin límites. Una explosión de creatividad que lleva el pop argentino a otro nivel.',
     songs: [
       'Bailar o morir',
       'Señora',
@@ -173,6 +173,13 @@ export function getAlbumById(id) {
 // Este id es el que se va a guardar en Firebase.
 export function getSongId(albumId, songIndex) {
   return `${albumId}-${songIndex + 1}`
+}
+
+// Arma el link de búsqueda de YouTube para escuchar una canción.
+// Uso una búsqueda (y no un video fijo) para que el link nunca quede roto.
+// encodeURIComponent convierte espacios y tildes en texto válido para una URL.
+export function getListenUrl(songTitle) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(`Lali ${songTitle}`)}`
 }
 
 export default albums

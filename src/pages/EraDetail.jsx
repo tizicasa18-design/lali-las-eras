@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getAlbumById, getSongId, studioAlbums } from '../data/albums'
+import { getAlbumById, getSongId, getListenUrl, studioAlbums } from '../data/albums'
 import { getDiaryEntries, addDiaryEntry } from '../firebase/diary'
 import AlbumCover from '../components/AlbumCover'
 import DiaryForm from '../components/DiaryForm'
@@ -95,7 +95,7 @@ function EraDetail() {
           <p className="kicker">{album.special ? 'Era especial' : 'Álbum de estudio'}</p>
           <h1>{album.title}</h1>
           {album.artist && <p className="era-artist">{album.artist}</p>}
-          <p>{album.description}</p>
+          <p className="era-description">{album.description}</p>
 
           {/* Ficha del álbum */}
           <dl className="era-facts">
@@ -117,7 +117,7 @@ function EraDetail() {
             <div className="progress" aria-hidden="true">
               <div
                 className="progress-bar"
-                style={{ width: `${progress}%`, backgroundColor: album.colors.accent }}
+                style={{ width: `${progress}%` }}
               />
             </div>
           )}
@@ -139,23 +139,35 @@ function EraDetail() {
             <li key={song}>
               <div className="song-row">
                 <span>{song}</span>
-                {isRegistered && (
-                  <Link to="/diario" className="song-registered">
-                    ✓ En tu diario · Ver
-                  </Link>
-                )}
-                {!isRegistered && !loading && selectedIndex !== index && (
-                  <button
-                    className="button-secondary"
-                    aria-label={`Agregar ${song} a mi diario`}
-                    onClick={() => {
-                      setSelectedIndex(index)
-                      setMessage({ type: '', text: '' })
-                    }}
+                <div className="song-actions">
+                  {/* Abre YouTube en otra pestaña, así mi página queda abierta para volver a puntuar */}
+                  <a
+                    className="button-secondary button-small"
+                    href={getListenUrl(song)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Escuchar ${song} en YouTube (se abre en otra pestaña)`}
                   >
-                    + Agregar a mi diario
-                  </button>
-                )}
+                    ▶ Escuchar
+                  </a>
+                  {isRegistered && (
+                    <Link to="/diario" className="song-registered">
+                      ✓ En tu diario · Ver
+                    </Link>
+                  )}
+                  {!isRegistered && !loading && selectedIndex !== index && (
+                    <button
+                      className="button button-small"
+                      aria-label={`Agregar ${song} a mi diario`}
+                      onClick={() => {
+                        setSelectedIndex(index)
+                        setMessage({ type: '', text: '' })
+                      }}
+                    >
+                      + Agregar a mi diario
+                    </button>
+                  )}
+                </div>
               </div>
 
               {selectedIndex === index && (

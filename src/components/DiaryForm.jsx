@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import StarRating from './StarRating'
 
 const MAX_REVIEW_LENGTH = 500
+
+// Disparadores: comienzos de frase para ayudar a poner en palabras lo que sentís.
+// Al tocar uno, se escribe en la reseña y la persona sigue desde ahí.
+const LISTENED_STARTERS = ['Me hace sentir', 'Cuando la escucho', 'Me recuerda a', 'Es mi favorita porque']
+const PENDING_STARTERS = ['Quiero escucharla porque', 'Me la recomendó']
 
 // Valores con los que arranca el formulario cuando es un registro nuevo
 const EMPTY_ENTRY = { rating: 0, review: '', listened: true, favorite: false }
@@ -18,6 +23,19 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
 
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+
+  // Referencia a la caja de texto, para poner el cursor ahí después de tocar un disparador
+  const reviewRef = useRef(null)
+
+  // Agrega el comienzo de frase al final de lo que ya está escrito
+  function addStarter(starter) {
+    const newReview = review.trim() === '' ? `${starter} ` : `${review.trimEnd()} ${starter} `
+    if (newReview.length > MAX_REVIEW_LENGTH) {
+      return // no paso el límite de caracteres
+    }
+    setReview(newReview)
+    reviewRef.current.focus()
+  }
 
   async function handleSubmit(event) {
     event.preventDefault() // evita que la página se recargue
@@ -72,14 +90,38 @@ function DiaryForm({ songTitle, initialValues = EMPTY_ENTRY, submitLabel, onSubm
         </p>
       )}
 
+      {/* Disparadores: botones que escriben el comienzo de una frase */}
+      <div className="form-field">
+        <span className="form-label">
+          {listened ? '¿Qué te pasó al escucharla? Empezá por acá:' : '¿Por qué la querés escuchar?'}
+        </span>
+        <div className="prompt-chips">
+          {(listened ? LISTENED_STARTERS : PENDING_STARTERS).map((starter) => (
+            <button
+              key={starter}
+              type="button"
+              className="prompt-chip"
+              onClick={() => addStarter(starter)}
+            >
+              {starter}…
+            </button>
+          ))}
+        </div>
+      </div>
+
       <label>
         {listened ? 'Reseña (opcional)' : 'Nota (opcional)'}
         <textarea
+          ref={reviewRef}
           value={review}
           onChange={(event) => setReview(event.target.value)}
-          rows={3}
+          rows={4}
           maxLength={MAX_REVIEW_LENGTH}
-          placeholder={listened ? '¿Qué te provoca esta canción?' : '¿Por qué la querés escuchar?'}
+          placeholder={
+            listened
+              ? 'Poné en palabras lo que te generó: un recuerdo, una persona, un momento…'
+              : 'Dejate una nota para cuando la escuches.'
+          }
         />
         <span className="char-count">
           {review.length}/{MAX_REVIEW_LENGTH}

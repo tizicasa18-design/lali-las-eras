@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDiaryEntries, updateDiaryEntry, deleteDiaryEntry } from '../firebase/diary'
-import albums, { getAlbumById } from '../data/albums'
+import albums, { getListenUrl } from '../data/albums'
 import DiaryForm from '../components/DiaryForm'
 import StarRating from '../components/StarRating'
 import StatusMessage from '../components/StatusMessage'
@@ -14,10 +14,39 @@ function formatDate(timestamp) {
   return timestamp.toDate().toLocaleDateString('es-AR')
 }
 
-// Color de la era de cada registro (para el borde de la entrada)
-function getAlbumColor(albumId) {
-  const album = getAlbumById(albumId)
-  return album ? album.colors.accent : '#171313'
+// Calcula "Tus números" a partir de las canciones que ya escuché.
+// No guarda nada nuevo en Firebase: usa los registros que ya están cargados.
+function getStats(entries) {
+  const listenedEntries = entries.filter((entry) => entry.listened)
+
+  // Top 5: ordeno por estrellas (de mayor a menor). Si empatan, primero las favoritas.
+  // Uso [...lista] para no modificar la lista original al ordenar.
+  const topSongs = [...listenedEntries]
+    .sort((a, b) => b.rating - a.rating || Number(b.favorite) - Number(a.favorite))
+    .slice(0, 5)
+
+  // Era favorita: el álbum con el mejor promedio de estrellas
+  let favoriteEra = null
+  albums.forEach((album) => {
+    const albumEntries = listenedEntries.filter((entry) => entry.albumId === album.id)
+    if (albumEntries.length === 0) {
+      return
+    }
+    const total = albumEntries.reduce((sum, entry) => sum + entry.rating, 0)
+    const average = total / albumEntries.length
+    // Si empatan en promedio, gana la que tiene más canciones escuchadas
+    if (
+      !favoriteEra ||
+      average > favoriteEra.average ||
+      (average === favoriteEra.average && albumEntries.length > favoriteEra.count)
+    ) {
+      favoriteEra = { title: album.title, average, count: albumEntries.length }
+    }
+  })
+
+  const reviewCount = entries.filter((entry) => entry.review).length
+
+  return { topSongs, favoriteEra, reviewCount }
 }
 
 function MyDiary() {
@@ -131,20 +160,24 @@ function MyDiary() {
 
   const favoriteCount = entries.filter((entry) => entry.favorite).length
   const pendingCount = entries.filter((entry) => !entry.listened).length
+  const stats = getStats(entries)
 
   return (
     <section className="page">
-      <p className="kicker">Tu espacio personal</p>
-      <h1>Mi diario</h1>
-      <p>Las canciones que escuchaste, tus puntuaciones y reseñas, y las que tenés pendientes.</p>
+      {/* Encabezado negro, igual en todas las secciones */}
+      <header className="page-header">
+        <p className="kicker">Tu espacio personal</p>
+        <h1>Mi diario</h1>
+        <p>Lo que sentiste con cada canción, tus puntuaciones y las que tenés pendientes.</p>
 
-      {!loading && entries.length > 0 && (
-        <p className="diary-counter">
-          <strong>{entries.length}</strong> {entries.length === 1 ? 'canción registrada' : 'canciones registradas'} ·{' '}
-          <strong>{favoriteCount}</strong> {favoriteCount === 1 ? 'favorita' : 'favoritas'} ·{' '}
-          <strong>{pendingCount}</strong> {pendingCount === 1 ? 'pendiente' : 'pendientes'}
-        </p>
-      )}
+        {!loading && entries.length > 0 && (
+          <p className="diary-counter">
+            <strong>{entries.length}</strong> {entries.length === 1 ? 'canción registrada' : 'canciones registradas'} ·{' '}
+            <strong>{favoriteCount}</strong> {favoriteCount === 1 ? 'favorita' : 'favoritas'} ·{' '}
+            <strong>{pendingCount}</strong> {pendingCount === 1 ? 'pendiente' : 'pendientes'}
+          </p>
+        )}
+      </header>
 
       <StatusMessage type={message.type} text={message.text} />
 
@@ -164,6 +197,41 @@ function MyDiary() {
             Explorar las eras
           </Link>
         </div>
+      )}
+
+      {/* Tus números: solo aparece si ya escuchó al menos una canción */}
+      {stats.topSongs.length > 0 && (
+        <section className="diary-stats" aria-label="Tus números">
+          <div className="stat-card">
+            <p className="stat-label">Tu era</p>
+            <p className="stat-big">{stats.favoriteEra.title}</p>
+            <p className="stat-detail">
+              {stats.favoriteEra.average.toFixed(1)} ★ de promedio en {stats.favoriteEra.count}{' '}
+              {stats.favoriteEra.count === 1 ? 'canción' : 'canciones'}
+            </p>
+          </div>
+
+          <div className="stat-card">
+            <p className="stat-label">Lo pusiste en palabras</p>
+            <p className="stat-big">{stats.reviewCount}</p>
+            <p className="stat-detail">{stats.reviewCount === 1 ? 'reseña escrita' : 'reseñas escritas'}</p>
+          </div>
+
+          <div className="stat-card stat-card-top">
+            <p className="stat-label">Tu top {stats.topSongs.length}</p>
+            <ol className="stat-top">
+              {stats.topSongs.map((entry) => (
+                <li key={entry.id}>
+                  <span>{entry.songTitle}</span>
+                  <span className="stat-top-rating">
+                    {entry.favorite && '♥ '}
+                    {entry.rating} ★
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
       )}
 
       {entries.length > 0 && (
@@ -203,11 +271,7 @@ function MyDiary() {
 
       <ul className="diary-list">
         {filteredEntries.map((entry) => (
-          <li
-            key={entry.id}
-            className="diary-entry"
-            style={{ borderLeftColor: getAlbumColor(entry.albumId) }}
-          >
+          <li key={entry.id} className="diary-entry">
             {editingId === entry.id ? (
               <DiaryForm
                 songTitle={entry.songTitle}
@@ -218,11 +282,26 @@ function MyDiary() {
               />
             ) : (
               <>
-                <p className="diary-entry-album">
-                  <Link to={`/eras/${entry.albumId}`}>{entry.albumTitle}</Link> ·{' '}
-                  {formatDate(entry.createdAt)}
-                </p>
-                <h2 className="diary-entry-title">{entry.songTitle}</h2>
+                {/* Arriba: datos de la canción a la izquierda y "Escuchar" a la derecha,
+                    separado de los botones de abajo que cambian el registro */}
+                <div className="diary-entry-top">
+                  <div>
+                    <p className="diary-entry-album">
+                      <Link to={`/eras/${entry.albumId}`}>{entry.albumTitle}</Link> ·{' '}
+                      {formatDate(entry.createdAt)}
+                    </p>
+                    <h2 className="diary-entry-title">{entry.songTitle}</h2>
+                  </div>
+                  <a
+                    className="button button-small"
+                    href={getListenUrl(entry.songTitle)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Escuchar ${entry.songTitle} en YouTube (se abre en otra pestaña)`}
+                  >
+                    ▶ Escuchar
+                  </a>
+                </div>
                 {entry.listened ? (
                   <StarRating value={entry.rating} />
                 ) : (

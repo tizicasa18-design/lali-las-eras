@@ -5,18 +5,18 @@ import { studioAlbums, specialAlbums } from '../data/albums'
 const steps = [
   {
     number: '01',
-    title: 'Elegí una era',
-    text: 'Recorré los seis álbumes de estudio de Lali y entrá al que quieras.',
+    title: 'Escuchala',
+    text: 'Entrá a una era y escuchá la canción. Dejá que te pase lo que te tenga que pasar.',
   },
   {
     number: '02',
-    title: 'Registrá canciones',
-    text: 'Agregá a tu diario las que escuchaste, con estrellas y reseña, o guardalas como pendientes.',
+    title: 'Ponelo en palabras',
+    text: 'Puntuala y escribí qué sentiste. Si no sabés cómo empezar, te damos el comienzo de la frase.',
   },
   {
     number: '03',
-    title: 'Armá tu diario',
-    text: 'Volvé cuando quieras: editá, marcá favoritas y filtrá tus registros.',
+    title: 'Mirá tu historia',
+    text: 'Volvé a leer lo que escribiste, armá tu top de favoritas y descubrí cuál es tu era.',
   },
 ]
 
@@ -29,8 +29,8 @@ function Home() {
           <p className="kicker">Diario musical · Proyecto de fans</p>
           <h1 className="home-title">Seis eras. Un ícono.</h1>
           <p className="home-intro">
-            Un diario musical para fans de Lali. Recorré sus seis álbumes de estudio, registrá las
-            canciones que escuchaste, puntualas y dejá tu reseña.
+            Un diario para poner en palabras lo que te pasa cuando escuchás a Lali. Canción por
+            canción, era por era.
           </p>
           <div className="form-buttons">
             <Link to="/eras" className="button">
@@ -43,8 +43,21 @@ function Home() {
         </div>
       </section>
 
-      {/* Cómo funciona */}
+      {/* La idea del diario + cómo funciona */}
       <section className="page">
+        <div className="home-idea">
+          <p className="kicker">La idea</p>
+          <p className="home-idea-text">
+            Hay canciones que te acompañan en un momento, te recuerdan a alguien o te dicen lo que
+            no sabías decir. Este diario es para eso: para que expreses cómo te sentís y lo que te
+            genera un artista, y lo pongas en palabras.
+          </p>
+          <p>
+            Cada canción que escuchás queda guardada con tus estrellas y lo que sentiste. Con el
+            tiempo, tu diario te muestra tus favoritas y cuál es la era que más te representa.
+          </p>
+        </div>
+
         <h2>Cómo funciona</h2>
         <ol className="steps">
           {steps.map((step) => (
@@ -63,11 +76,7 @@ function Home() {
         <ul className="timeline-cards">
           {studioAlbums.map((album) => (
             <li key={album.id}>
-              <Link
-                to={`/eras/${album.id}`}
-                className="timeline-card"
-                style={{ borderTopColor: album.colors.accent }}
-              >
+              <Link to={`/eras/${album.id}`} className="timeline-card">
                 <span className="timeline-year">{album.year}</span>
                 <span className="timeline-title">{album.title}</span>
                 <span className="timeline-songs">{album.songs.length} canciones</span>

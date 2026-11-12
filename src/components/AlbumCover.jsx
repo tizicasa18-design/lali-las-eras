@@ -1,12 +1,17 @@
-// Portada provisoria: un cuadrado con el color de la era y el título.
-// Más adelante se puede reemplazar por la imagen real del álbum.
+// Portada de cada era.
+// Si el álbum tiene imagen (campo "cover"), la muestra.
+// Si no tiene, muestra un cuadrado negro con el título.
 function AlbumCover({ album }) {
+  if (album.cover) {
+    return (
+      <div className="album-cover">
+        <img src={album.cover} alt={`Portada de ${album.title}`} loading="lazy" />
+      </div>
+    )
+  }
+
   return (
-    <div
-      className="album-cover"
-      style={{ backgroundColor: album.colors.accent }}
-      aria-hidden="true"
-    >
+    <div className="album-cover" aria-hidden="true">
       <span>{album.title}</span>
     </div>
   )
