@@ -367,7 +367,17 @@ h2::after {
 
 /* ================= 8. Inicio ================= */
 
-/* Presentación: bloque negro de lado a lado, como la tapa de una revista */
+/* Presentación: foto de Lali en River de fondo, con una capa negra encima
+   (el degradado) para que el texto blanco se lea bien */
+.hero {
+  background-image:
+    linear-gradient(rgba(23, 19, 19, 0.55), rgba(23, 19, 19, 0.85)),
+    url('/images/fondo-river.jpg');
+  background-size: cover;
+  background-position: center 40%;
+}
+
+/* Presentación: bloque de lado a lado, como la tapa de una revista */
 .hero .page {
   padding-top: 4rem;
   padding-bottom: 4.5rem;
@@ -509,8 +519,14 @@ h2::after {
 }
 
 /* Era especial (Inicio) */
+/* Foto de BOM de fondo con baja opacidad: la capa negra deja ver solo un 25 % de la foto */
 .special-block {
   box-shadow: var(--sombra-roja);
+  background-image:
+    linear-gradient(rgba(23, 19, 19, 0.75), rgba(23, 19, 19, 0.75)),
+    url('/images/fondo-bom.jpg');
+  background-size: cover;
+  background-position: center 30%;
 }
 
 .special-block h2 {

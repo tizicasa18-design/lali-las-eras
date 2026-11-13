@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getAlbumById, getSongId, getListenUrl, studioAlbums } from '../data/albums'
+import { getAlbumById, getSongId, getListenUrl, studioAlbums, specialAlbums } from '../data/albums'
 import { getDiaryEntries, addDiaryEntry } from '../firebase/diary'
 import AlbumCover from '../components/AlbumCover'
 import DiaryForm from '../components/DiaryForm'
@@ -72,10 +72,12 @@ function EraDetail() {
     registeredIds.includes(getSongId(album.id, index)),
   ).length
 
-  // Era anterior y siguiente (solo entre las 6 de estudio)
-  const position = studioAlbums.findIndex((item) => item.id === album.id)
-  const previousAlbum = position > 0 ? studioAlbums[position - 1] : null
-  const nextAlbum = position >= 0 && position < studioAlbums.length - 1 ? studioAlbums[position + 1] : null
+  // Era anterior y siguiente: las 6 de estudio en orden y, al final, la era especial.
+  // Así desde la última era se puede pasar a la especial, y desde la especial volver.
+  const allEras = [...studioAlbums, ...specialAlbums]
+  const position = allEras.findIndex((item) => item.id === album.id)
+  const previousAlbum = position > 0 ? allEras[position - 1] : null
+  const nextAlbum = position < allEras.length - 1 ? allEras[position + 1] : null
 
   // Porcentaje de canciones registradas, para la barra de progreso
   const progress = Math.round((registeredCount / album.songs.length) * 100)
@@ -192,7 +194,9 @@ function EraDetail() {
         )}
         {nextAlbum && (
           <Link to={`/eras/${nextAlbum.id}`} className="era-nav-next" onClick={resetForNewAlbum}>
-            <span className="era-nav-label">Era siguiente →</span>
+            <span className="era-nav-label">
+              {nextAlbum.special ? 'Era especial →' : 'Era siguiente →'}
+            </span>
             {nextAlbum.title}
           </Link>
         )}
