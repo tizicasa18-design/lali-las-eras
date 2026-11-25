@@ -223,6 +223,7 @@ Con `flex-wrap`, si el título era largo, los botones bajaban de renglón. Adem�
 | Las reglas del archivo no hacían efecto | El archivo `firestore.rules` del repo **no se publica solo** (Vercel no lo sube) | Hay que pegarlo en la consola: Firestore → Reglas → **Publicar** |
 | Muchos pedidos seguidos a iTunes fallaban | La API tiene un **límite de pedidos por minuto** | En el uso normal no pasa, y si pasa, la app muestra el mensaje de error |
 | En Vercel, el ingreso con Google no iba a funcionar | Google solo permite el ingreso desde **dominios autorizados** | Firebase → Authentication → Settings → Authorized domains → agregué `lali-las-eras.vercel.app` |
+| El `git push` no subía: pedía iniciar sesión en GitHub | En esta compu Git era nuevo y no tenía guardada mi cuenta | Usé el ingreso con **código de dispositivo**: GitHub me dio un código, lo puse en github.com/login/device y autoricé. Git guardó la sesión |
 
 **Para el oral, el mejor ejemplo es el de los permisos:**
 > "Cuando cargué el catálogo, Firestore lo rechazó con `permission-denied`. Era porque en las reglas tenía el id de mi usuario anónimo viejo, y no el de mi cuenta de Google. Eso me demostró que las reglas funcionan: aunque la página `/admin` esté abierta, si no sos la administradora, la base no te deja escribir."
@@ -241,6 +242,7 @@ Con `flex-wrap`, si el título era largo, los botones bajaban de renglón. Adem�
 4. **Vercel publica solo** cada vez que hay un push a `main`: hace `npm run build` y sube la carpeta `dist`.
 5. Le puse el tag **`v4`** (como `v1`, `v2` y `v3`).
 6. **No hizo falta** agregar variables nuevas en Vercel: la API de iTunes no pide clave.
+7. **Lo probé en la versión publicada** (https://lali-las-eras.vercel.app): las eras cargan desde Firestore, el fragmento de "Besarte Mucho" aparece y `/admin` abre bien.
 
 **Cómo lo digo:**
 > "Vercel está conectado a mi repositorio de GitHub. Cada vez que hago push a `main`, Vercel corre `npm run build` y publica la carpeta `dist`. Es serverless: no administro ningún servidor; los datos están en Firebase y la página en Vercel."
