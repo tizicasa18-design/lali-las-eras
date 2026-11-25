@@ -811,6 +811,61 @@ h2::after {
   gap: 0.5rem;
 }
 
+/* V4: reproductor del fragmento (API de iTunes). Usa Flexbox: tapa a la izquierda, datos a la derecha */
+.song-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  padding: 1rem;
+  background-color: var(--negro);
+  color: var(--blanco);
+  border-radius: var(--radio-tarjeta);
+}
+
+.song-preview img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--radio-boton);
+  box-shadow: var(--aura);
+}
+
+.song-preview-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 200px;
+}
+
+.song-preview-title {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+.song-preview-album {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.song-preview audio {
+  width: 100%;
+  max-width: 360px;
+}
+
+.song-preview a {
+  color: var(--blanco);
+  font-size: 0.8rem;
+}
+
+.song-preview a:hover {
+  color: var(--rojo);
+}
+
 .song-registered {
   color: var(--rojo);
   font-size: 0.75rem;

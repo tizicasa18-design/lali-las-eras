@@ -5,6 +5,7 @@ import { useAlbums } from '../hooks/useAlbums'
 import { getDiaryEntries, addDiaryEntry } from '../firebase/diary'
 import AlbumCover from '../components/AlbumCover'
 import DiaryForm from '../components/DiaryForm'
+import SongPreview from '../components/SongPreview'
 import StatusMessage from '../components/StatusMessage'
 import { useUser } from '../hooks/useUser'
 import { loginWithGoogle } from '../firebase/auth'
@@ -33,6 +34,8 @@ function EraDetail() {
   const loading = checking || (Boolean(user) && diaryLoading)
   // posición de la canción que se está registrando (null = ningún formulario abierto)
   const [selectedIndex, setSelectedIndex] = useState(null)
+  // posición de la canción cuyo fragmento se está escuchando (null = ninguno)
+  const [previewIndex, setPreviewIndex] = useState(null)
   const [message, setMessage] = useState({ type: '', text: '' })
 
   // READ: pregunta a Firebase qué canciones ya registré
@@ -69,6 +72,7 @@ function EraDetail() {
   // Al pasar a otra era, cierro el formulario y borro el mensaje anterior
   function resetForNewAlbum() {
     setSelectedIndex(null)
+    setPreviewIndex(null)
     setMessage({ type: '', text: '' })
     setLoading(true)
   }
@@ -186,6 +190,16 @@ function EraDetail() {
               <div className="song-row">
                 <span>{song}</span>
                 <div className="song-actions">
+                  {/* V4: abre o cierra el reproductor del fragmento (API de iTunes) */}
+                  <button
+                    type="button"
+                    className={previewIndex === index ? 'toggle active button-small' : 'toggle button-small'}
+                    aria-expanded={previewIndex === index}
+                    aria-label={`Escuchar un fragmento de ${song}`}
+                    onClick={() => setPreviewIndex(previewIndex === index ? null : index)}
+                  >
+                    ♫ Fragmento
+                  </button>
                   {/* Abre YouTube en otra pestaña, así mi página queda abierta para volver a puntuar */}
                   <a
                     className="button-secondary button-small"
@@ -219,6 +233,8 @@ function EraDetail() {
                   )}
                 </div>
               </div>
+
+              {previewIndex === index && <SongPreview songTitle={song} />}
 
               {selectedIndex === index && (
                 <DiaryForm

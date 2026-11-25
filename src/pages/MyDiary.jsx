@@ -7,6 +7,7 @@ import DiaryForm from '../components/DiaryForm'
 import StarRating from '../components/StarRating'
 import StatusMessage from '../components/StatusMessage'
 import LoginPrompt from '../components/LoginPrompt'
+import SongPreview from '../components/SongPreview'
 import { useUser } from '../hooks/useUser'
 
 // Convierte la fecha que guarda Firebase en un texto como "12/11/2026"
@@ -62,6 +63,7 @@ function MyDiary() {
   const [editingId, setEditingId] = useState(null) // id del registro que se está editando
   const [editingValues, setEditingValues] = useState(null) // datos con los que arranca el formulario
   const [updatingId, setUpdatingId] = useState(null) // id del registro que se está guardando
+  const [previewId, setPreviewId] = useState(null) // id del registro cuyo fragmento se escucha
   const [message, setMessage] = useState({ type: '', text: '' })
 
   // Filtros
@@ -349,7 +351,19 @@ function MyDiary() {
                       Marcar como escuchada
                     </button>
                   )}
+                  {/* V4: fragmento de 30 segundos desde la API de iTunes */}
+                  <button
+                    type="button"
+                    className={previewId === entry.id ? 'toggle active' : 'toggle'}
+                    aria-expanded={previewId === entry.id}
+                    aria-label={`Escuchar un fragmento de ${entry.songTitle}`}
+                    onClick={() => setPreviewId(previewId === entry.id ? null : entry.id)}
+                  >
+                    ♫ Fragmento
+                  </button>
                 </div>
+
+                {previewId === entry.id && <SongPreview songTitle={entry.songTitle} />}
 
                 <div className="form-buttons">
                   <button
