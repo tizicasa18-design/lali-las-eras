@@ -776,13 +776,28 @@ h2::after {
   font-family: var(--font-titulo);
 }
 
+/* Fila de cada canción con CSS Grid (V4):
+   columna 1 = el título, que ocupa lo que sobra (1fr);
+   columna 2 = los botones, siempre del mismo ancho.
+   minmax(0, 1fr) deja que el título se achique y baje de renglón en lugar de empujar los botones. */
 .song-row {
-  display: flex;
-  flex-wrap: wrap; /* en celular los botones bajan abajo del nombre */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem 1rem;
+  gap: 1rem;
+  min-height: 2.6rem;
   font-weight: 500;
+}
+
+/* Título: si es largo baja a un segundo renglón; si es larguísimo, corta con "…" en el segundo */
+.song-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
 }
 
 /* Mi diario: datos de la canción a la izquierda y "Escuchar" a la derecha */
@@ -803,12 +818,31 @@ h2::after {
   flex-shrink: 0;
 }
 
-/* Botones de cada canción: Escuchar + Agregar */
+/* Botones de cada canción: Fragmento + Escuchar + Agregar.
+   3 columnas de ancho fijo: así cada botón cae en el mismo lugar en todas las filas,
+   aunque falte alguno (por ejemplo, cuando el formulario está abierto). */
 .song-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 7.5rem 7rem 12rem;
   gap: 0.5rem;
+  align-items: center;
+}
+
+/* Los 3 botones con la misma altura y el contenido centrado */
+.song-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 2.3rem;
+  padding: 0 0.6rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* El tercer lugar es siempre el de "Agregar" o "En tu diario" */
+.song-actions > :nth-child(3) {
+  grid-column: 3;
 }
 
 /* V4: reproductor del fragmento (API de iTunes). Usa Flexbox: tapa a la izquierda, datos a la derecha */
@@ -1423,6 +1457,32 @@ button.star:hover {
 
   .era-header .album-cover {
     max-width: 14rem;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Canciones en pantallas chicas: los botones muestran solo el ícono (♫ ▶ +),
+     así entran en la misma hilera que el título. El nombre completo queda en aria-label. */
+  .song-list {
+    padding-left: 1.6rem;
+  }
+
+  .song-row {
+    gap: 0.6rem;
+  }
+
+  .song-actions {
+    grid-template-columns: repeat(3, 2.5rem);
+    gap: 0.35rem;
+  }
+
+  .song-action {
+    padding: 0;
+    font-size: 0.95rem;
+  }
+
+  .action-label {
+    display: none;
   }
 }
 

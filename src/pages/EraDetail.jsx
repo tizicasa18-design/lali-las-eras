@@ -187,37 +187,43 @@ function EraDetail() {
 
           return (
             <li key={song}>
+              {/* Fila con CSS Grid: el título a la izquierda (hasta 2 renglones)
+                  y 3 columnas fijas para los botones, así quedan alineados en todas las canciones */}
               <div className="song-row">
-                <span>{song}</span>
+                <span className="song-title">{song}</span>
                 <div className="song-actions">
                   {/* V4: abre o cierra el reproductor del fragmento (API de iTunes) */}
                   <button
                     type="button"
-                    className={previewIndex === index ? 'toggle active button-small' : 'toggle button-small'}
+                    className={previewIndex === index ? 'toggle active song-action' : 'toggle song-action'}
                     aria-expanded={previewIndex === index}
                     aria-label={`Escuchar un fragmento de ${song}`}
                     onClick={() => setPreviewIndex(previewIndex === index ? null : index)}
                   >
-                    ♫ Fragmento
+                    ♫ <span className="action-label">Fragmento</span>
                   </button>
                   {/* Abre YouTube en otra pestaña, así mi página queda abierta para volver a puntuar */}
                   <a
-                    className="button-secondary button-small"
+                    className="button-secondary song-action"
                     href={getListenUrl(song)}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Escuchar ${song} en YouTube (se abre en otra pestaña)`}
                   >
-                    ▶ Escuchar
+                    ▶ <span className="action-label">Escuchar</span>
                   </a>
                   {isRegistered && (
-                    <Link to="/diario" className="song-registered">
-                      ✓ En tu diario · Ver
+                    <Link
+                      to="/diario"
+                      className="song-registered song-action"
+                      aria-label={`${song} ya está en tu diario. Ver mi diario`}
+                    >
+                      ✓ <span className="action-label">En tu diario</span>
                     </Link>
                   )}
                   {!isRegistered && !loading && selectedIndex !== index && (
                     <button
-                      className="button button-small"
+                      className="button song-action"
                       aria-label={`Agregar ${song} a mi diario`}
                       onClick={() => {
                         if (!user) {
@@ -228,7 +234,7 @@ function EraDetail() {
                         setMessage({ type: '', text: '' })
                       }}
                     >
-                      + Agregar a mi diario
+                      + <span className="action-label">Agregar a mi diario</span>
                     </button>
                   )}
                 </div>
