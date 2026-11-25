@@ -17,7 +17,7 @@ function Navbar() {
       // Si cierra la ventanita de Google no pasa nada
       if (error.code !== 'auth/popup-closed-by-user') {
         console.error(error)
-        window.alert('No se pudo ingresar. Probá de nuevo.')
+        window.alert(`No se pudo ingresar. Probá de nuevo. (${error.code})`)
       }
     }
   }

@@ -16,7 +16,19 @@ service cloud.firestore {
         && (resource.data.listened == false || request.resource.data.listened == true);
     }
 
-    // El usuario tiene que haber iniciado sesión (anónima) y ser el dueño
+    // V4: el catálogo de álbumes.
+    // Lo puede leer cualquiera (también sin ingresar), pero solo la administradora lo modifica.
+    match /albums/{albumId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // La administradora es una sola cuenta: la mía, identificada por su id de usuario (uid)
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'egJhMogvEvMyJB4g1hZ10cABFyU2';
+    }
+
+    // El usuario tiene que haber ingresado (con Google) y ser el dueño
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
     }

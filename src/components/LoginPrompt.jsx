@@ -13,7 +13,8 @@ function LoginPrompt() {
       // Si la persona cierra la ventanita de Google no es un error: no muestro nada
       if (loginError.code !== 'auth/popup-closed-by-user') {
         console.error(loginError)
-        setError('No se pudo ingresar. Probá de nuevo.')
+        // Muestro el código del error para saber qué pasó (por ejemplo auth/popup-blocked)
+        setError(`No se pudo ingresar. Probá de nuevo. (${loginError.code})`)
       }
     }
   }

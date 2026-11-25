@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { studioAlbums, specialAlbums } from '../data/albums'
+import { useAlbums } from '../hooks/useAlbums'
+import StatusMessage from '../components/StatusMessage'
 
 // Los 3 pasos de "Cómo funciona". Los guardo en un array y los muestro con map.
 const steps = [
@@ -21,6 +22,9 @@ const steps = [
 ]
 
 function Home() {
+  // V4: las eras vienen de Firestore
+  const { studioAlbums, specialAlbums, loading, error } = useAlbums()
+
   return (
     <>
       {/* Presentación */}
@@ -73,6 +77,8 @@ function Home() {
       {/* Línea de tiempo */}
       <section className="page">
         <h2>Línea de tiempo</h2>
+        {loading && <p className="loading">Cargando las eras…</p>}
+        <StatusMessage type="error" text={error} />
         {/* Lista ordenada (ol) porque las eras van en orden cronológico.
             Cada era es un punto sobre la línea roja. */}
         <ol className="timeline">

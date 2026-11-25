@@ -7,6 +7,7 @@ import Eras from './pages/Eras'
 import EraDetail from './pages/EraDetail'
 import MyDiary from './pages/MyDiary'
 import NotFound from './pages/NotFound'
+import Admin from './pages/Admin'
 
 // App arma la estructura general: menú arriba, la pantalla que corresponda y el pie.
 // Cada Route conecta una dirección (path) con una pantalla (element).
@@ -22,6 +23,7 @@ function App() {
           <Route path="/eras" element={<Eras />} />
           <Route path="/eras/:albumId" element={<EraDetail />} />
           <Route path="/diario" element={<MyDiary />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

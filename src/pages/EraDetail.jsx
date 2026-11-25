@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getAlbumById, getSongId, getListenUrl, studioAlbums, specialAlbums } from '../data/albums'
+import { getSongId, getListenUrl } from '../utils/songs'
+import { useAlbums } from '../hooks/useAlbums'
 import { getDiaryEntries, addDiaryEntry } from '../firebase/diary'
 import AlbumCover from '../components/AlbumCover'
 import DiaryForm from '../components/DiaryForm'
@@ -12,6 +13,14 @@ import { loginWithGoogle } from '../firebase/auth'
 // Lee el id de la URL (por ejemplo /eras/brava) y busca ese álbum.
 function EraDetail() {
   const { albumId } = useParams()
+  // V4: el álbum ya no sale de un archivo, sale de Firestore
+  const {
+    studioAlbums,
+    specialAlbums,
+    getAlbumById,
+    loading: albumsLoading,
+    error: albumsError,
+  } = useAlbums()
   const album = getAlbumById(albumId)
   // Quién ingresó (V4). Las canciones se ven sin ingresar; para agregarlas hay que ingresar.
   const { user, checking } = useUser()
@@ -62,6 +71,16 @@ function EraDetail() {
     setSelectedIndex(null)
     setMessage({ type: '', text: '' })
     setLoading(true)
+  }
+
+  // Mientras llegan los álbumes de Firestore, o si no se pudieron cargar
+  if (albumsLoading || albumsError) {
+    return (
+      <section className="page">
+        {albumsLoading && <p className="loading">Cargando la era…</p>}
+        <StatusMessage type="error" text={albumsError} />
+      </section>
+    )
   }
 
   // Si alguien escribe una URL que no existe

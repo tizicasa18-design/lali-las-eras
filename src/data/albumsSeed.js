@@ -1,5 +1,8 @@
-// Datos fijos de los 6 álbumes de estudio de Lali + 1 era especial (BOM).
-// No van a Firebase porque no cambian: son siempre los mismos.
+// CARGA INICIAL del catálogo (V4).
+// Antes la app leía los álbumes directamente de este archivo.
+// Ahora los álbumes están en Firestore (colección "albums") y la app los lee de ahí.
+// Este archivo solo se usa UNA vez, desde la página /admin, para subir los datos a la base.
+// Queda en el proyecto como copia de respaldo por si hay que volver a cargarlos.
 // Fuente de los tracklists: edición estándar de cada álbum.
 
 const albums = [
@@ -155,31 +158,5 @@ const albums = [
     ],
   },
 ]
-
-// Solo las 6 eras de estudio (sin la era especial)
-export const studioAlbums = albums.filter((album) => !album.special)
-
-// Solo las eras especiales / colaboraciones
-export const specialAlbums = albums.filter((album) => album.special)
-
-// Busca un álbum por su id (por ejemplo 'brava').
-// Si no lo encuentra devuelve undefined.
-export function getAlbumById(id) {
-  return albums.find((album) => album.id === id)
-}
-
-// Arma el id de una canción juntando el álbum y el número de tema.
-// Ejemplo: 'brava-3' es "Besarte Mucho".
-// Este id es el que se va a guardar en Firebase.
-export function getSongId(albumId, songIndex) {
-  return `${albumId}-${songIndex + 1}`
-}
-
-// Arma el link de búsqueda de YouTube para escuchar una canción.
-// Uso una búsqueda (y no un video fijo) para que el link nunca quede roto.
-// encodeURIComponent convierte espacios y tildes en texto válido para una URL.
-export function getListenUrl(songTitle) {
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(`Lali ${songTitle}`)}`
-}
 
 export default albums

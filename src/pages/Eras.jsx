@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { studioAlbums, specialAlbums } from '../data/albums'
+import { useAlbums } from '../hooks/useAlbums'
 import AlbumCover from '../components/AlbumCover'
+import StatusMessage from '../components/StatusMessage'
 
 // Muestra una tarjeta por álbum. La uso para las 6 eras y para la era especial.
 function AlbumCard({ album }) {
@@ -18,6 +19,9 @@ function AlbumCard({ album }) {
 }
 
 function Eras() {
+  // V4: las eras vienen de Firestore
+  const { studioAlbums, specialAlbums, loading, error } = useAlbums()
+
   return (
     <section className="page">
       {/* Encabezado negro, igual en todas las secciones */}
@@ -30,22 +34,27 @@ function Eras() {
         </p>
       </header>
 
+      {loading && <p className="loading">Cargando las eras…</p>}
+      <StatusMessage type="error" text={error} />
+
       <ul className="album-grid">
         {studioAlbums.map((album) => (
           <AlbumCard key={album.id} album={album} />
         ))}
       </ul>
 
-      {/* Bloque invertido: fondo negro y letra blanca */}
-      <div className="special-section">
-        <h2>Era especial</h2>
-        <p>Colaboraciones y proyectos compartidos, fuera de los álbumes de estudio.</p>
-        <ul className="album-grid">
-          {specialAlbums.map((album) => (
-            <AlbumCard key={album.id} album={album} />
-          ))}
-        </ul>
-      </div>
+      {/* Bloque invertido: fondo negro y letra blanca (solo si ya llegó la era especial) */}
+      {specialAlbums.length > 0 && (
+        <div className="special-section">
+          <h2>Era especial</h2>
+          <p>Colaboraciones y proyectos compartidos, fuera de los álbumes de estudio.</p>
+          <ul className="album-grid">
+            {specialAlbums.map((album) => (
+              <AlbumCard key={album.id} album={album} />
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   )
 }

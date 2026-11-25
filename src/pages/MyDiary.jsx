@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDiaryEntries, updateDiaryEntry, deleteDiaryEntry } from '../firebase/diary'
-import albums, { getListenUrl } from '../data/albums'
+import { getListenUrl } from '../utils/songs'
+import { useAlbums } from '../hooks/useAlbums'
 import DiaryForm from '../components/DiaryForm'
 import StarRating from '../components/StarRating'
 import StatusMessage from '../components/StatusMessage'
@@ -18,7 +19,7 @@ function formatDate(timestamp) {
 
 // Calcula "Tus números" a partir de las canciones que ya escuché.
 // No guarda nada nuevo en Firebase: usa los registros que ya están cargados.
-function getStats(entries) {
+function getStats(entries, albums) {
   const listenedEntries = entries.filter((entry) => entry.listened)
 
   // Top 5: ordeno por estrellas (de mayor a menor). Si empatan, primero las favoritas.
@@ -54,6 +55,8 @@ function getStats(entries) {
 function MyDiary() {
   // Quién ingresó (V4: ingreso con Google)
   const { user, checking } = useUser()
+  // V4: la lista de eras (para el filtro y "Tu era") viene de Firestore
+  const { albums } = useAlbums()
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState(null) // id del registro que se está editando
@@ -161,7 +164,7 @@ function MyDiary() {
 
   const favoriteCount = entries.filter((entry) => entry.favorite).length
   const pendingCount = entries.filter((entry) => !entry.listened).length
-  const stats = getStats(entries)
+  const stats = getStats(entries, albums)
 
   // Si nadie ingresó, en lugar del diario muestro el botón para ingresar con Google
   if (checking || !user) {
