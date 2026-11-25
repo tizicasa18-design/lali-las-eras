@@ -5,6 +5,8 @@ import albums, { getListenUrl } from '../data/albums'
 import DiaryForm from '../components/DiaryForm'
 import StarRating from '../components/StarRating'
 import StatusMessage from '../components/StatusMessage'
+import LoginPrompt from '../components/LoginPrompt'
+import { useUser } from '../hooks/useUser'
 
 // Convierte la fecha que guarda Firebase en un texto como "12/11/2026"
 function formatDate(timestamp) {
@@ -50,6 +52,8 @@ function getStats(entries) {
 }
 
 function MyDiary() {
+  // Quién ingresó (V4: ingreso con Google)
+  const { user, checking } = useUser()
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState(null) // id del registro que se está editando
@@ -74,10 +78,14 @@ function MyDiary() {
     setLoading(false)
   }
 
-  // Se ejecuta una sola vez, cuando se abre la pantalla
+  // Se ejecuta al abrir la pantalla y cada vez que cambia quién ingresó.
+  // Si nadie ingresó, no pido nada a Firebase.
   useEffect(() => {
+    if (!user) {
+      return
+    }
     loadEntries()
-  }, [])
+  }, [user])
 
   // UPDATE: guarda los cambios del formulario de edición
   async function handleUpdate(entry, values) {
@@ -154,6 +162,20 @@ function MyDiary() {
   const favoriteCount = entries.filter((entry) => entry.favorite).length
   const pendingCount = entries.filter((entry) => !entry.listened).length
   const stats = getStats(entries)
+
+  // Si nadie ingresó, en lugar del diario muestro el botón para ingresar con Google
+  if (checking || !user) {
+    return (
+      <section className="page">
+        <header className="page-header">
+          <p className="kicker">Tu espacio personal</p>
+          <h1>Mi diario</h1>
+          <p>Lo que sentiste con cada canción, tus puntuaciones y las que tenés pendientes.</p>
+        </header>
+        {checking ? <p className="loading">Cargando…</p> : <LoginPrompt />}
+      </section>
+    )
+  }
 
   return (
     <section className="page">

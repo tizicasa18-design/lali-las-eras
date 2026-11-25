@@ -265,7 +265,33 @@ h2::after {
 
 .navbar-links {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
+}
+
+/* V4: foto, nombre y botón de ingresar / salir */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--rojo);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.navbar-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* El botón de ingresar se ve siempre (en el celular, dentro del menú) */
+.navbar-toggle.navbar-auth {
+  display: inline-block;
 }
 
 .navbar-links a {
@@ -1318,9 +1344,14 @@ button.star:hover {
     display: flex;
   }
 
-  .navbar-links a {
+  .navbar-links a,
+  .navbar-user {
     padding: 0.8rem 0;
     border-top: 1px solid var(--blanco);
+  }
+
+  .navbar-links {
+    align-items: stretch;
   }
 
   .page-header,

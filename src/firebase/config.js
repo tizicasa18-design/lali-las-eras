@@ -17,5 +17,5 @@ const app = initializeApp(firebaseConfig)
 // db: la base de datos Firestore (donde se guarda el diario)
 export const db = getFirestore(app)
 
-// auth: el inicio de sesión anónimo (para saber de quién es cada diario)
+// auth: el ingreso con Google (para saber de quién es cada diario)
 export const auth = getAuth(app)

@@ -5,16 +5,23 @@ import { getDiaryEntries, addDiaryEntry } from '../firebase/diary'
 import AlbumCover from '../components/AlbumCover'
 import DiaryForm from '../components/DiaryForm'
 import StatusMessage from '../components/StatusMessage'
+import { useUser } from '../hooks/useUser'
+import { loginWithGoogle } from '../firebase/auth'
 
 // Una sola pantalla que sirve para todos los álbumes.
 // Lee el id de la URL (por ejemplo /eras/brava) y busca ese álbum.
 function EraDetail() {
   const { albumId } = useParams()
   const album = getAlbumById(albumId)
+  // Quién ingresó (V4). Las canciones se ven sin ingresar; para agregarlas hay que ingresar.
+  const { user, checking } = useUser()
 
   // ids de las canciones que ya están en el diario (por ejemplo 'brava-3')
-  const [registeredIds, setRegisteredIds] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [diaryIds, setRegisteredIds] = useState([])
+  const [diaryLoading, setLoading] = useState(true)
+  // Si nadie ingresó, no hay diario: lo calculo en el momento en lugar de guardarlo en el estado
+  const registeredIds = user ? diaryIds : []
+  const loading = checking || (Boolean(user) && diaryLoading)
   // posición de la canción que se está registrando (null = ningún formulario abierto)
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [message, setMessage] = useState({ type: '', text: '' })
@@ -30,10 +37,25 @@ function EraDetail() {
     setLoading(false)
   }
 
-  // Se ejecuta al abrir la pantalla y cada vez que cambio de álbum
+  // Se ejecuta al abrir la pantalla, cada vez que cambio de álbum y cuando alguien entra o sale.
+  // Si nadie ingresó, no hay diario que leer.
   useEffect(() => {
+    if (!user) {
+      return
+    }
     loadRegisteredSongs()
-  }, [albumId])
+  }, [albumId, user])
+
+  // Si toca "+ Agregar" sin haber ingresado, primero le pido que ingrese con Google
+  async function handleLogin() {
+    try {
+      await loginWithGoogle()
+    } catch (error) {
+      if (error.code !== 'auth/popup-closed-by-user') {
+        setMessage({ type: 'error', text: 'No se pudo ingresar. Probá de nuevo.' })
+      }
+    }
+  }
 
   // Al pasar a otra era, cierro el formulario y borro el mensaje anterior
   function resetForNewAlbum() {
@@ -130,6 +152,9 @@ function EraDetail() {
       <p className="form-hint">
         Agregá a tu diario las que escuchaste, o guardalas como pendientes para escucharlas después.
       </p>
+      {!checking && !user && (
+        <p className="form-hint">Para agregar canciones a tu diario, ingresá con tu cuenta de Google.</p>
+      )}
       <StatusMessage type={message.type} text={message.text} />
       {loading && <p className="loading">Cargando tu diario…</p>}
 
@@ -162,6 +187,10 @@ function EraDetail() {
                       className="button button-small"
                       aria-label={`Agregar ${song} a mi diario`}
                       onClick={() => {
+                        if (!user) {
+                          handleLogin()
+                          return
+                        }
                         setSelectedIndex(index)
                         setMessage({ type: '', text: '' })
                       }}
